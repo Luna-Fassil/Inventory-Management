@@ -1,68 +1,120 @@
-//! TEMP Just until backend finished
+//! TEMP Just until backend is done
 let inventory = [
   {
     id: 1,
     name: "Shirt",
     quantity: 1,
     price: 100,
+    color: "blue",
   },
   {
     id: 2,
     name: "Pants",
     quantity: 2,
     price: 200,
+    color: "red",
   },
   {
     id: 3,
     name: "Socks",
     quantity: 3,
     price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
+  },
+  {
+    id: 3,
+    name: "Socks",
+    quantity: 3,
+    price: 300,
+    color: "green",
   },
 ];
-//! TEMP
 
-function addItem(name, quantity, price) {
-  //! TEMP: Just until backend finished
+function addItem(options) {
   item = {
-    id: inventory.length + 1,
-    name: name,
-    quantity: quantity,
-    price: price,
+    id: Math.random * 100,
+    name: options.name,
+    quantity: options.quantity,
+    price: options.price,
   };
   inventory.push(item);
-  //! TEMP
 
-  // TODO: send the request to the server
+  // TODO: send the request to the server to update there
 
   renderResults();
 }
 
 function deleteItem(id) {
-  //! TEMP: Just until backend finished
   let index = inventory.find((item) => item.id === id);
   inventory.splice(index, 1);
-  //! TEMP
 
-  // TODO: send the request to the server
+  // TODO: send the request to the server to update there
 
   renderResults();
 }
 
-function modifyItem(id, name, quantity, price) {
-  //! TEMP: Just until backend finished
+function modifyItem(options) {
   let index = inventory.findIndex((item) => item.id === id);
   inventory[index].name = name;
   inventory[index].quantity = quantity;
   inventory[index].price = price;
-  //! TEMP
 
-  // TODO: send the request to the server
+  // TODO: send the request to the server to update there
 
   renderResults();
 }
 
 function fetchResults(page, sort, filters) {
-  // TODO: fetch results from the server
+  // TODO: send the request to the server to update there
 
   return inventory;
 }
@@ -71,7 +123,7 @@ function openEditPopup(id) {
   let edit_popup = document.querySelector("#edit-popup");
   edit_popup.style.visibility = "visible";
 
-  // TODO: Set the values of the inputs based on the item existing info
+  // TODO: send the request to the server to update there
 }
 
 function renderResults() {
@@ -88,6 +140,7 @@ function renderResults() {
               <td>${item.name}</td>
               <td>${item.quantity}</td>
               <td>${item.price}</td>
+              <td>${item.color}</td>
               <td>
               <button class="edit-button" onclick="openEditPopup()">Edit</button>
               <td>

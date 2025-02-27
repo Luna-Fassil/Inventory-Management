@@ -1,1 +1,1 @@
-# HyperLink Inventory Ssytem
+# HyperLink Inventory System
