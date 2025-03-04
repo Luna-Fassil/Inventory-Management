@@ -40,7 +40,7 @@
       </a>
     </nav>
     <main id="inventory" class="panel">
-      <form class="filters">
+      <form id="filters-form" class="filters">
         <div class="filter-item">
           <label for="search"> </label>
           <input type="text" id="search" placeholder="Search" />
@@ -62,9 +62,14 @@
             <label for="">Quantity</label>
           </div>
           <div class="inputs">
-            <input type="number" name="min-price" min="0" placeholder="min" />
+            <input
+              type="number"
+              name="min-quantity"
+              min="0"
+              placeholder="min"
+            />
             <div>-</div>
-            <input type="number" name="max-price" placeholder="max" />
+            <input type="number" name="max-quantity" placeholder="max" />
           </div>
         </div>
 
@@ -75,6 +80,7 @@
 
           <div class="inputs">
             <select name="" id="">
+              <option value="any">Any</option>
               <option value="red">Red</option>
               <option value="blue">Blue</option>
               <option value="green">Green</option>
@@ -87,7 +93,7 @@
         <button class="primary" style="margin-top: auto">Apply</button>
       </form>
       <div class="results">
-        <div id="results-footer">
+        <div class="results-controls">
           <button id="add-item-button">Add +</button>
           <button>
             <img
@@ -97,19 +103,21 @@
             />
           </button>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Product Name</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Color</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Color</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </main>
     <div id="add-popup" class="popup-background">
@@ -119,20 +127,36 @@
           <button class="close">X</button>
         </div>
         <div class="popup-body">
-          <form action="">
+          <form id="add-item-form" action="">
             <div class="form-group">
               <label for="product-name">Product Name</label>
-              <input type="text" id="product-name" placeholder="Shirt" />
+              <input
+                type="text"
+                id="product-name"
+                placeholder="Shirt"
+                required
+              />
             </div>
 
             <div class="form-group">
               <label for="quantity">Quantity</label>
-              <input type="number" id="quantity" placeholder="1" />
+              <input type="number" id="quantity" placeholder="1" required />
             </div>
 
             <div class="form-group">
               <label for="price">Price</label>
-              <input type="number" id="price" placeholder="20" />
+              <input type="number" id="price" placeholder="20" required />
+            </div>
+
+            <div class="form-group">
+              <label for="color">Color</label>
+              <select id="color" required>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+                <option value="purple">Purple</option>
+              </select>
             </div>
             <button type="submit" class="submit primary">Add Item</button>
           </form>

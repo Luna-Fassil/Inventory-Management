@@ -23,6 +23,18 @@
   --icon-brightness: 0.176;
 }
 
+/* 
+:root {
+  --accent:rgb(105, 175, 255);
+  --base: #080808;
+  --section: #181818;
+  --card: #222222;
+  --sub-section: #f8f9fa;
+  --text: white;
+
+  --icon-brightness: 0.9;
+} */
+
 body {
   width: 100vw;
   height: 100dvh;
@@ -58,6 +70,7 @@ select {
   background: var(--card);
   border: none;
   box-sizing: border-box;
+  color: var(--text);
 }
 
 /* Sidebar */
@@ -99,7 +112,6 @@ select {
   width: 200px;
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-s);
 }
 
 .filter-item.option {
@@ -149,7 +161,6 @@ select {
 
 #search {
   width: 100%;
-  padding: var(--spacing-s);
 }
 
 /* Results Table */
@@ -161,27 +172,38 @@ select {
   padding: var(--spacing);
 }
 
-#inventory > .results {
+.results {
   display: grid;
+  overflow: hidden;
   grid-template-rows: auto 1fr;
   gap: var(--spacing);
-
-    height: 200px;
-overflow: scroll;
 }
 
-#results-footer {
+.results-controls {
   display: flex;
   justify-content: space-between;
   gap: var(--spacing);
+}
+
+.table-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+
+  border-radius: var(--radius);
 }
 
 table {
   width: 100%;
   text-align: left;
   border-collapse: collapse;
+}
 
-  overflow: scroll;
+thead {
+  position: sticky;
+  top: 0;
+
+  background: var(--section);
 }
 
 td,
@@ -225,7 +247,7 @@ tr > th:last-child {
   visibility: hidden;
   place-items: center;
 
-  background: #000000B0;
+  background: #000000b0;
 }
 
 .popup {
@@ -276,8 +298,8 @@ label::target-text {
 }
 
 input#search {
-  border: 2px solid #aaa;
-  background: white;
+  border: 2px solid var(--subtext);
+  background: var(--card);
 }
 
 button {
@@ -285,6 +307,7 @@ button {
   border-radius: var(--radius);
   padding: var(--gap);
   border: none;
+  color: var(--text);
 }
 
 button.primary {

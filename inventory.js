@@ -1,108 +1,34 @@
 //! TEMP Just until backend is done
-let inventory = [
-  {
-    id: 1,
-    name: "Shirt",
-    quantity: 1,
-    price: 100,
-    color: "blue",
-  },
-  {
-    id: 2,
-    name: "Pants",
-    quantity: 2,
-    price: 200,
-    color: "red",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-  {
-    id: 3,
-    name: "Socks",
-    quantity: 3,
-    price: 300,
-    color: "green",
-  },
-];
+let next_id = 0;
+let inventory = [];
+
+let filters = {};
 
 function addItem(options) {
-  item = {
-    id: Math.random * 100,
+  const item = {
+    id: next_id,
     name: options.name,
     quantity: options.quantity,
     price: options.price,
+    color: options.color,
   };
+  next_id += 1;
+
+  // TODO: send the request to the server instead of inventory
   inventory.push(item);
 
-  // TODO: send the request to the server to update there
-
-  renderResults();
+  updateResults();
 }
 
 function deleteItem(id) {
-  let index = inventory.find((item) => item.id === id);
-  inventory.splice(index, 1);
+  //TODO: send the request to the server to update there
+  let item_index = inventory.find((item) => item.id === id);
+  inventory.splice(item_index, 1);
 
-  // TODO: send the request to the server to update there
-
-  renderResults();
+  updateResults();
 }
 
-function modifyItem(options) {
+function modifyItem(options = {}) {
   let index = inventory.findIndex((item) => item.id === id);
   inventory[index].name = name;
   inventory[index].quantity = quantity;
@@ -110,29 +36,49 @@ function modifyItem(options) {
 
   // TODO: send the request to the server to update there
 
-  renderResults();
+  updateResults();
 }
 
-function fetchResults(page, sort, filters) {
-  // TODO: send the request to the server to update there
+function fetchResults() {
+  // TODO: Do this on the server instead of here
 
-  return inventory;
+  console.log("Inventory: ", inventory);
+  let results = inventory.slice();
+  console.log("Results: ", results);
+
+  if (filters.maxPrice) {
+    results = results.filter((item) => item.price > filters.maxPrice);
+    console.log(results);
+  }
+
+  if (filters.minPrice) {
+    results = results.filter((item) => item.price < filters.maxPrice);
+    console.log(results);
+  }
+
+  if (filters.maxQuantity) {
+    console.log("testb");
+    results = results.filter((item) => item.price > filters.maxQuantity);
+  }
+
+  if (filters.minQuantity) {
+    console.log("testc");
+    results = results.filter((item) => item.price < filters.minQuantity);
+  }
+
+  return results.slice(0, 20);
 }
 
-function openEditPopup(id) {
-  let edit_popup = document.querySelector("#edit-popup");
-  edit_popup.style.visibility = "visible";
-
-  // TODO: send the request to the server to update there
-}
-
-function renderResults() {
+function updateResults() {
   let table = document.querySelector("table > tbody");
   table.innerHTML = "";
 
   // TODO: Come up with a more complete set of data headers
   // Add items to the table
   let results = fetchResults();
+
+  console.log(results);
+
   results.forEach((item) => {
     let row = document.createElement("tr");
     row.innerHTML = `
@@ -149,12 +95,37 @@ function renderResults() {
   });
 }
 
-window.onload = () => {
-  renderResults();
+function openEditPopup(id) {
+  let edit_popup = document.querySelector("#edit-popup");
+  edit_popup.style.visibility = "visible";
 
+  // TODO: send the request to the server to update there
+}
+
+window.onload = () => {
+  updateResults();
+
+  // Add Form
   let add_popup = document.querySelector("#add-popup");
+  let addItemForm = document.querySelector("#add-item-form");
+
   add_popup.querySelector(".close").addEventListener("click", () => {
     add_popup.style.visibility = "hidden";
+  });
+
+  addItemForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const newItem = {
+      name: document.querySelector("#product-name").value,
+      quantity: parseInt(document.querySelector("#quantity").value),
+      price: parseFloat(document.querySelector("#price").value),
+      color: document.querySelector("#color").value,
+    };
+
+    addItem(newItem);
+    add_popup.style.visibility = "hidden";
+    addItemForm.reset();
   });
 
   let addItemButton = document.querySelector("#add-item-button");
@@ -162,6 +133,7 @@ window.onload = () => {
     add_popup.style.visibility = "visible";
   });
 
+  // Edit Popup
   let edit_popup = document.querySelector("#edit-popup");
   edit_popup.querySelector(".close").addEventListener("click", () => {
     edit_popup.style.visibility = "hidden";
@@ -172,5 +144,30 @@ window.onload = () => {
     button.addEventListener("click", (index) => {
       openEditPopup(index);
     });
+  });
+
+  // Filters
+  const filtersForm = document.querySelector("#filters-form");
+  filtersForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    filters = {
+      search: document.querySelector("#search").value,
+      minPrice:
+        parseFloat(document.querySelector("input[name='min-price']").value) ||
+        undefined,
+      maxPrice:
+        parseFloat(document.querySelector("input[name='max-price']").value) ||
+        undefined,
+      minQuantity:
+        parseInt(document.querySelector("input[name='min-quantity']").value) ||
+        undefined,
+      maxQuantity:
+        parseInt(document.querySelector("input[name='max-quantity']").value) ||
+        undefined,
+      color: document.querySelector("#color").value,
+    };
+
+    updateResults();
   });
 };
