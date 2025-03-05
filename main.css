@@ -294,10 +294,6 @@ label::target-text {
   flex-direction: column;
 }
 
-.submit {
-  grid-column: span 2;
-}
-
 input#search {
   border: 2px solid var(--subtext);
   background: var(--card);

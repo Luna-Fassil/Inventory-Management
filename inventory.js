@@ -5,15 +5,156 @@ let inventory = [
     color: "red",
     id: 0,
     name: "aoeu",
-    price: 123,
-    quantity: 123,
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 1,
+    name: "asdf",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 2,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
+  },
+  {
+    color: "red",
+    id: 3,
+    name: "aoeu",
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 4,
+    name: "aoeu",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 5,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
+  },
+  {
+    color: "red",
+    id: 6,
+    name: "aoeu",
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 7,
+    name: "aoeu",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 8,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
+  },
+  {
+    color: "red",
+    id: 9,
+    name: "aoeu",
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 10,
+    name: "aoeu",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 11,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
+  },
+  {
+    color: "red",
+    id: 12,
+    name: "aoeu",
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 13,
+    name: "aoeu",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 14,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
+  },
+  {
+    color: "red",
+    id: 15,
+    name: "aoeu",
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 16,
+    name: "aoeu",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 17,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
+  },
+  {
+    color: "red",
+    id: 18,
+    name: "aoeu",
+    price: 1,
+    quantity: 2,
+  },
+  {
+    color: "blue",
+    id: 19,
+    name: "aoeu",
+    price: 3,
+    quantity: 4,
+  },
+  {
+    color: "green",
+    id: 20,
+    name: "aoeu",
+    price: 5,
+    quantity: 6,
   },
 ];
 
 let filters = {};
+let editingId = -1;
 
+// TODO: send the request to the server instead of inventory
 function addItem(options) {
-  console.log(options);
   const item = {
     id: next_id,
     name: options.name,
@@ -23,37 +164,46 @@ function addItem(options) {
   };
   next_id += 1;
 
-  // TODO: send the request to the server instead of inventory
   inventory.push(item);
 
   updateTable();
 }
 
+//TODO: send the request to the server instead of here
 function deleteItem(id) {
-  //TODO: send the request to the server to update there
-  let item_index = inventory.find((item) => item.id === id);
+  let item_index = inventory.findIndex((item) => item.id === id);
   inventory.splice(item_index, 1);
 
   updateTable();
 }
 
-function modifyItem(options = {}) {
-  let index = inventory.findIndex((item) => item.id === id);
-  inventory[index].name = name;
-  inventory[index].quantity = quantity;
-  inventory[index].price = price;
+// TODO: send the request to the server instead of here
+function modifyItem(id, options = {}) {
+  let item_index = inventory.findIndex((item) => item.id === id);
+  let item = inventory[item_index];
 
-  // TODO: send the request to the server to update there
+  if (options.name) {
+    item.name = options.name;
+  }
+
+  if (options.price) {
+    item.price = options.price;
+  }
+
+  if (options.quantity) {
+    item.quantity = options.quantity;
+  }
+
+  if (options.color) {
+    item.color = options.color;
+  }
 
   updateTable();
 }
 
-function fetchResults() {
-  // TODO: Do this on the server instead of here
-
-  console.log("Inventory: ", inventory);
+// TODO: Do this on the server instead of here
+function fetchResults(skip, amount, filters) {
   let results = inventory.slice();
-  console.log("Results: ", results);
 
   if (filters.search) {
     results = results.filter(
@@ -77,24 +227,18 @@ function fetchResults() {
     results = results.filter((item) => item.quantity > filters.minQuantity);
   }
 
-  console.log("Filters:", filters);
-
   if (filters.color) {
     results = results.filter((item) => item.color == filters.color);
   }
 
-  return results.slice(0, 20);
+  return results.slice(skip, amount);
 }
 
 function updateTable() {
   let table = document.querySelector("table > tbody");
   table.innerHTML = "";
 
-  // TODO: Come up with a more complete set of data headers
-  // Add items to the table
-  let results = fetchResults();
-
-  console.log(results);
+  let results = fetchResults(0, 99, filters);
 
   results.forEach((item) => {
     let row = document.createElement("tr");
@@ -105,14 +249,14 @@ function updateTable() {
               <td>${item.price}</td>
               <td>${item.color}</td>
               <td>
-              <button class="edit-button" onclick="openEditPopup()"><img style="width: 1rem" src="./icons/edit.svg"></button>
+              <button class="edit-button" onclick="openEditPopup(${item.id})"><img style="width: 1rem" src="./icons/edit.svg"></button>
               <td>
             `;
     table.appendChild(row);
   });
 }
 
-function initalizeAddPopup() {
+function initializeAddPopup() {
   let add_popup = document.querySelector("#add-popup");
   let addItemForm = document.querySelector("#add-item-form");
 
@@ -141,21 +285,54 @@ function initalizeAddPopup() {
   });
 }
 
-function initalizeEditPopup() {
+function openEditPopup(id) {
   let edit_popup = document.querySelector("#edit-popup");
+  editingId = id;
+
+  let itemIndex = inventory.findIndex((item) => item.id == id);
+  let item = inventory[itemIndex];
+
+  document.querySelector("#edit-popup #product-name").value = item.name;
+  document.querySelector("#edit-popup #quantity").value = item.quantity;
+  document.querySelector("#edit-popup #price").value = item.price;
+  document.querySelector("#edit-popup #color").value = item.color;
+
+  edit_popup.style.visibility = "visible";
+}
+
+function initializeEditPopup() {
+  let edit_popup = document.querySelector("#edit-popup");
+
   edit_popup.querySelector(".close").addEventListener("click", () => {
     edit_popup.style.visibility = "hidden";
   });
 
-  let editButtons = document.querySelectorAll(".edit-button");
-  editButtons.forEach((button) => {
-    button.addEventListener("click", (index) => {
-      openEditPopup(index);
-    });
+  edit_popup.querySelector(".delete").addEventListener("click", () => {
+    deleteItem(editingId);
+  });
+
+  edit_popup.addEventListener("reset", (e) => {
+    edit_popup.style.visibility = "hidden";
+  });
+
+  edit_popup.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Collect the options form the form
+    const options = {
+      name: document.querySelector("#edit-popup #product-name").value,
+      price: parseFloat(document.querySelector("#edit-popup #price").value),
+      quantity: parseInt(document.querySelector("#edit-popup #quantity").value),
+      color: document.querySelector("#edit-popup #color").value,
+    };
+
+    modifyItem(editingId, options);
+
+    edit_popup.style.visibility = "hidden";
   });
 }
 
-function initalizeFilters() {
+function initializeFilters() {
   const filtersForm = document.querySelector("#filters-form");
 
   // Submit Behaviour
@@ -191,9 +368,9 @@ function initalizeFilters() {
 }
 
 window.onload = () => {
-  initalizeAddPopup();
-  initalizeEditPopup();
-  initalizeFilters();
+  initializeAddPopup();
+  initializeEditPopup();
+  initializeFilters();
 
   updateTable();
 };
