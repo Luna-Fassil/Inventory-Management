@@ -1,10 +1,19 @@
 //! TEMP Just until backend is done
 let next_id = 0;
-let inventory = [];
+let inventory = [
+  {
+    color: "red",
+    id: 0,
+    name: "aoeu",
+    price: 123,
+    quantity: 123,
+  },
+];
 
 let filters = {};
 
 function addItem(options) {
+  console.log(options);
   const item = {
     id: next_id,
     name: options.name,
@@ -17,7 +26,7 @@ function addItem(options) {
   // TODO: send the request to the server instead of inventory
   inventory.push(item);
 
-  updateResults();
+  updateTable();
 }
 
 function deleteItem(id) {
@@ -25,7 +34,7 @@ function deleteItem(id) {
   let item_index = inventory.find((item) => item.id === id);
   inventory.splice(item_index, 1);
 
-  updateResults();
+  updateTable();
 }
 
 function modifyItem(options = {}) {
@@ -36,7 +45,7 @@ function modifyItem(options = {}) {
 
   // TODO: send the request to the server to update there
 
-  updateResults();
+  updateTable();
 }
 
 function fetchResults() {
@@ -46,30 +55,38 @@ function fetchResults() {
   let results = inventory.slice();
   console.log("Results: ", results);
 
+  if (filters.search) {
+    results = results.filter(
+      (item) => item.name.includes(filters.search) || item.id == filters.search
+    );
+  }
+
   if (filters.maxPrice) {
-    results = results.filter((item) => item.price > filters.maxPrice);
-    console.log(results);
+    results = results.filter((item) => item.price < filters.maxPrice);
   }
 
   if (filters.minPrice) {
-    results = results.filter((item) => item.price < filters.maxPrice);
-    console.log(results);
+    results = results.filter((item) => item.price > filters.minPrice);
   }
 
   if (filters.maxQuantity) {
-    console.log("testb");
-    results = results.filter((item) => item.price > filters.maxQuantity);
+    results = results.filter((item) => item.quantity < filters.maxQuantity);
   }
 
   if (filters.minQuantity) {
-    console.log("testc");
-    results = results.filter((item) => item.price < filters.minQuantity);
+    results = results.filter((item) => item.quantity > filters.minQuantity);
+  }
+
+  console.log("Filters:", filters);
+
+  if (filters.color) {
+    results = results.filter((item) => item.color == filters.color);
   }
 
   return results.slice(0, 20);
 }
 
-function updateResults() {
+function updateTable() {
   let table = document.querySelector("table > tbody");
   table.innerHTML = "";
 
@@ -88,24 +105,14 @@ function updateResults() {
               <td>${item.price}</td>
               <td>${item.color}</td>
               <td>
-              <button class="edit-button" onclick="openEditPopup()">Edit</button>
+              <button class="edit-button" onclick="openEditPopup()"><img style="width: 1rem" src="./icons/edit.svg"></button>
               <td>
             `;
     table.appendChild(row);
   });
 }
 
-function openEditPopup(id) {
-  let edit_popup = document.querySelector("#edit-popup");
-  edit_popup.style.visibility = "visible";
-
-  // TODO: send the request to the server to update there
-}
-
-window.onload = () => {
-  updateResults();
-
-  // Add Form
+function initalizeAddPopup() {
   let add_popup = document.querySelector("#add-popup");
   let addItemForm = document.querySelector("#add-item-form");
 
@@ -132,8 +139,9 @@ window.onload = () => {
   addItemButton.addEventListener("click", () => {
     add_popup.style.visibility = "visible";
   });
+}
 
-  // Edit Popup
+function initalizeEditPopup() {
   let edit_popup = document.querySelector("#edit-popup");
   edit_popup.querySelector(".close").addEventListener("click", () => {
     edit_popup.style.visibility = "hidden";
@@ -145,29 +153,47 @@ window.onload = () => {
       openEditPopup(index);
     });
   });
+}
 
-  // Filters
+function initalizeFilters() {
   const filtersForm = document.querySelector("#filters-form");
+
+  // Submit Behaviour
   filtersForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
+    let searchQuery = document.querySelector("#search").value;
+    let inputMinPrice =
+      parseFloat(document.querySelector("input[name='min-price']").value) ||
+      undefined;
+    let inputMaxPrice =
+      parseFloat(document.querySelector("input[name='max-price']").value) ||
+      undefined;
+    let inputMinQuantity =
+      parseInt(document.querySelector("input[name='min-quantity']").value) ||
+      undefined;
+    let inputMaxQuantity =
+      parseInt(document.querySelector("input[name='max-quantity']").value) ||
+      undefined;
+    let inputColor = document.querySelector("#filter-color").value;
+
     filters = {
-      search: document.querySelector("#search").value,
-      minPrice:
-        parseFloat(document.querySelector("input[name='min-price']").value) ||
-        undefined,
-      maxPrice:
-        parseFloat(document.querySelector("input[name='max-price']").value) ||
-        undefined,
-      minQuantity:
-        parseInt(document.querySelector("input[name='min-quantity']").value) ||
-        undefined,
-      maxQuantity:
-        parseInt(document.querySelector("input[name='max-quantity']").value) ||
-        undefined,
-      color: document.querySelector("#color").value,
+      search: searchQuery,
+      minPrice: inputMinPrice,
+      maxPrice: inputMaxPrice,
+      minQuantity: inputMinQuantity,
+      maxQuantity: inputMaxQuantity,
+      color: inputColor === "any" ? undefined : inputColor,
     };
 
-    updateResults();
+    updateTable();
   });
+}
+
+window.onload = () => {
+  initalizeAddPopup();
+  initalizeEditPopup();
+  initalizeFilters();
+
+  updateTable();
 };
