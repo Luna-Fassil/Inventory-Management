@@ -153,20 +153,25 @@ let inventory = [
 let filters = {};
 let editingId = -1;
 
-// TODO: send the request to the server instead of inventory
+// DONE -> connected to Flask
 function addItem(options) {
-  const item = {
-    id: next_id,
-    name: options.name,
-    quantity: options.quantity,
-    price: options.price,
-    color: options.color,
-  };
-  next_id += 1;
-
-  inventory.push(item);
-
-  updateTable();
+  fetch("http://127.0.0.1:5000/add", {//sends request to flask backend
+      method: "POST", //using HTTP post method 
+      headers: {
+          "Content-Type": "application/json"//tell flask we're sending JSON
+      },
+      body: JSON.stringify(options)//convert item details to JSON
+  })
+  .then(response => response.json())//convert server response to JSON
+  .then(data => {
+      if (data.error) {//error handle
+          alert("Error: " + data.error);
+      } else {
+          alert("Item added successfully!");//success popup
+          updateTable(); //get updated data from the backend
+      }
+  })
+  .catch(error => console.error("Error:", error));
 }
 
 //TODO: send the request to the server instead of here
@@ -234,55 +239,62 @@ function fetchResults(skip, amount, filters) {
   return results.slice(skip, amount);
 }
 
+//changed to flask collected 
 function updateTable() {
-  let table = document.querySelector("table > tbody");
-  table.innerHTML = "";
+  let table = document.querySelector("table > tbody");//find table body
+    table.innerHTML = "";  //clear existing table data 
 
-  let results = fetchResults(0, 99, filters);
-
-  results.forEach((item) => {
-    let row = document.createElement("tr");
-    row.innerHTML = `
-              <td>${item.id}</td>
-              <td>${item.name}</td>
-              <td>${item.quantity}</td>
-              <td>${item.price}</td>
-              <td>${item.color}</td>
-              <td>
-              <button class="edit-button" onclick="openEditPopup(${item.id})"><img style="width: 1rem" src="./icons/edit.svg"></button>
-              <td>
+    //fetch inventory from Flask instead of local array
+    fetch("/inventory")
+    .then(response => response.json())//converst to json so can be used in js file
+    .then(data => {
+        data.forEach(item => {//loop through each item in inventory
+            let row = document.createElement("tr");//new row
+            row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price}</td>
+                <td>${item.color}</td>
+                <td>
+                    <button class="edit-button" onclick="openEditPopup(${item.id})">
+                        <img style="width: 1rem" src="./icons/edit.svg">
+                    </button>
+                </td>
             `;
-    table.appendChild(row);
-  });
+            table.appendChild(row);//add this row to table
+        });
+    })
+    .catch(error => console.error("Error fetching inventory:", error));//prints error if neccessary
 }
 
 function initializeAddPopup() {
   let add_popup = document.querySelector("#add-popup");
-  let addItemForm = document.querySelector("#add-item-form");
+    let addItemForm = document.querySelector("#add-item-form");
 
-  add_popup.querySelector(".close").addEventListener("click", () => {
-    add_popup.style.visibility = "hidden";
-  });
+    add_popup.querySelector(".close").addEventListener("click", () => {
+        add_popup.style.visibility = "hidden";
+    });
 
-  addItemForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+    addItemForm.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-    const newItem = {
-      name: document.querySelector("#product-name").value,
-      quantity: parseInt(document.querySelector("#quantity").value),
-      price: parseFloat(document.querySelector("#price").value),
-      color: document.querySelector("#color").value,
-    };
+        const newItem = {
+            name: document.querySelector("#product-name").value,
+            quantity: parseInt(document.querySelector("#quantity").value),
+            price: parseFloat(document.querySelector("#price").value),
+            color: document.querySelector("#color").value
+        };
 
-    addItem(newItem);
-    add_popup.style.visibility = "hidden";
-    addItemForm.reset();
-  });
+        addItem(newItem);
+        add_popup.style.visibility = "hidden";
+        addItemForm.reset();
+    });
 
-  let addItemButton = document.querySelector("#add-item-button");
-  addItemButton.addEventListener("click", () => {
-    add_popup.style.visibility = "visible";
-  });
+    let addItemButton = document.querySelector("#add-item-button");
+    addItemButton.addEventListener("click", () => {
+        add_popup.style.visibility = "visible";
+    });
 }
 
 function openEditPopup(id) {
