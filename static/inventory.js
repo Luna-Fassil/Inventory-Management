@@ -271,6 +271,8 @@ function updateTable() {
   fetch("/inventory")
     .then((response) => response.json()) //converst to json so can be used in js file
     .then((data) => {
+      console.log("Data: ", data);
+      inventory = data;
       data.forEach((item) => {
         //loop through each item in inventory
         let row = document.createElement("tr"); //new row
