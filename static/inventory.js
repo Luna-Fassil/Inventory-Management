@@ -196,30 +196,38 @@ function deleteItem(id) {
 }
 
 
-// TODO: send the request to the server instead of here
 function modifyItem(id, options = {}) {
-  let item_index = inventory.findIndex((item) => item.id === id);
-  let item = inventory[item_index];
+  console.log("Sending Data to Backend:", { 
+    id: id, 
+    quantity: options.quantity, 
+    price: options.price, 
+    color: options.color 
+  }); // Debugging: Log the data being sent
 
-  if (options.name) {
-    item.name = options.name;
-  }
-
-  if (options.price) {
-    item.price = options.price;
-  }
-
-  if (options.quantity) {
-    item.quantity = options.quantity;
-  }
-
-  if (options.color) {
-    item.color = options.color;
-  }
-
-  updateTable();
+  fetch("http://127.0.0.1:5000/edit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: id,
+      quantity: options.quantity, // Send the new quantity
+      price: options.price, // Send the new price
+      color: options.color, // Send the new color
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Backend Response:", data); // Debugging: Log the response from the backend
+      if (data.error) {
+        alert("Error: " + data.error);
+      } else {
+        alert(data.message); // Success message
+        updateTable(); // Refresh the table after editing
+      }
+    })
+    .catch((error) => console.error("Error:", error));
 }
-
 // TODO: Do this on the server instead of here
 function fetchResults(skip, amount, filters) {
   let results = inventory.slice();
@@ -253,33 +261,35 @@ function fetchResults(skip, amount, filters) {
   return results.slice(skip, amount);
 }
 
-//changed to flask collected 
-function updateTable() {
-  let table = document.querySelector("table > tbody");//find table body
-    table.innerHTML = "";  //clear existing table data 
 
-    //fetch inventory from Flask instead of local array
-    fetch("/inventory")
-    .then(response => response.json())//converst to json so can be used in js file
-    .then(data => {
-        data.forEach(item => {//loop through each item in inventory
-            let row = document.createElement("tr");//new row
-            row.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.name}</td>
-                <td>${item.quantity}</td>
-                <td>${item.price}</td>
-                <td>${item.color}</td>
-                <td>
-                    <button class="edit-button" onclick="openEditPopup(${item.id})">
-                        <img style="width: 1rem" src="./icons/edit.svg">
-                    </button>
-                </td>
-            `;
-            table.appendChild(row);//add this row to table
-        });
+
+function updateTable() {
+  let table = document.querySelector("table > tbody");
+  table.innerHTML = ""; // Clear existing table data
+
+  // Fetch inventory from Flask backend
+  fetch("/inventory")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Fetched Data:", data); // Debugging: Log the fetched data
+      data.forEach((item) => {
+        let row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price}</td>
+          <td>${item.color}</td>
+          <td>
+            <button class="edit-button" onclick="openEditPopup(${item.id})">
+              <img style="width: 1rem" src="./icons/edit.svg">
+            </button>
+          </td>
+        `;
+        table.appendChild(row); // Add the row to the table
+      });
     })
-    .catch(error => console.error("Error fetching inventory:", error));//prints error if neccessary
+    .catch((error) => console.error("Error fetching inventory:", error));
 }
 
 function initializeAddPopup() {
@@ -311,40 +321,50 @@ function initializeAddPopup() {
     });
 }
 
+
+
 function openEditPopup(id) {
   let edit_popup = document.querySelector("#edit-popup");
-  editingId = id;
+  editingId = id; // Set the global editingId variable
 
-  let itemIndex = inventory.findIndex((item) => item.id == id);
-  let item = inventory[itemIndex];
+  // Find the item in the inventory
+  let item = inventory.find((item) => item.id == id);
 
+  // Populate the form with the item's current data
   document.querySelector("#edit-popup #product-name").value = item.name;
   document.querySelector("#edit-popup #quantity").value = item.quantity;
   document.querySelector("#edit-popup #price").value = item.price;
   document.querySelector("#edit-popup #color").value = item.color;
 
+  // Show the edit popup
   edit_popup.style.visibility = "visible";
 }
+
 
 function initializeEditPopup() {
   let edit_popup = document.querySelector("#edit-popup");
 
+  // Close the popup when the close button is clicked
   edit_popup.querySelector(".close").addEventListener("click", () => {
     edit_popup.style.visibility = "hidden";
   });
 
+  // Delete the item when the delete button is clicked
   edit_popup.querySelector(".delete").addEventListener("click", () => {
     deleteItem(editingId);
+    edit_popup.style.visibility = "hidden"; // Close the popup after deletion
   });
 
+  // Reset the form and close the popup when the form is reset
   edit_popup.addEventListener("reset", (e) => {
     edit_popup.style.visibility = "hidden";
   });
 
+  // Handle form submission
   edit_popup.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Collect the options form the form
+    // Collect the updated data from the form
     const options = {
       name: document.querySelector("#edit-popup #product-name").value,
       price: parseFloat(document.querySelector("#edit-popup #price").value),
@@ -352,8 +372,13 @@ function initializeEditPopup() {
       color: document.querySelector("#edit-popup #color").value,
     };
 
+    console.log("Editing Item ID:", editingId); // Debugging: Log the item ID
+    console.log("New Options:", options); // Debugging: Log the new options
+
+    // Call the modifyItem function to send the updated data to the backend
     modifyItem(editingId, options);
 
+    // Close the popup after submission
     edit_popup.style.visibility = "hidden";
   });
 }

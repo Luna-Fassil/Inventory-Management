@@ -61,5 +61,35 @@ def remove_item():
     # return an error if no matching item was found
     return jsonify({"error": "Item not found"}), 404
 
+
+
+@app.route("/edit", methods=["POST"])
+def edit_item():
+    data = request.json
+    print("Received Data:", data)  # Debugging: Log the received data
+
+    if "id" not in data or "quantity" not in data or "price" not in data or "color" not in data:
+        return jsonify({"error": "ID, quantity, price, and color are required"}), 400  # return error if any field is missing
+
+    item_id = data["id"]
+    new_quantity = int(data["quantity"])
+    new_price = float(data["price"])
+    new_color = data["color"]
+    
+    # find item in inventory
+    for item in inventory:
+        if item["id"] == item_id:
+            print("Found Item:", item)  # Debugging: Log the item before updating
+            item["quantity"] = new_quantity  # update the quantity of the item
+            item["price"] = new_price  # update the price of the item
+            item["color"] = new_color  # update the color of the item
+            print("Updated Item:", item)  # Debugging: Log the item after updating
+            return jsonify({"message": f"Item with ID {item_id} updated successfully", "item": item}), 200
+    
+    # return an error if no matching item was found
+    return jsonify({"error": "Item not found"}), 404
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+    
