@@ -31,7 +31,7 @@ def add_item():
     if not data or not all(k in data for k in ("name", "quantity", "price", "color")):
         return jsonify({"error": "Missing required fields"}), 400
     
-    #saved data of item assigns id
+    #saved data of item assigns id, name, quantity, price and colour which are stated requirement
     item = {
         "id": next_id,
         "name": data["name"],
@@ -53,7 +53,7 @@ def remove_item():
 
     item_id = data["id"]
     
-    # find item in inventory
+    # find item in inventory through iteration
     for item in inventory:
         if item["id"] == item_id:
             inventory.remove(item) # remove the item from the inventory
