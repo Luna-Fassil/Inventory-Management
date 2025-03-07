@@ -272,7 +272,7 @@ function updateTable() {
                 <td>${item.color}</td>
                 <td>
                     <button class="edit-button" onclick="openEditPopup(${item.id})">
-                        <img style="width: 1rem" src="./icons/edit.svg">
+                        <img style="width: 1rem" src="/static/icons/edit.svg">
                     </button>
                 </td>
             `;

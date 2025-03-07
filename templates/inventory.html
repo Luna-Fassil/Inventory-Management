@@ -15,21 +15,21 @@
         <!--TODO: change image sources to inside static folder-->
         <img
           class="sidebar-icon"
-          src="./icons/overview.svg"
+          src="{{ url_for('static', filename='icons/overview.svg') }}"
           alt="overview-icon"
         />
       </a>
       <a class="sidebar-item active" href="#">
         <img
           class="sidebar-icon"
-          src="./icons/inventory.svg"
+          src="{{ url_for('static', filename='icons/inventory.svg') }}"
           alt="inventory-icon"
         />
       </a>
       <a class="sidebar-item" href="./settings.html">
         <img
           class="sidebar-icon"
-          src="./icons/activity.svg"
+          src="{{ url_for('static', filename='icons/activity.svg') }}"
           alt="activity-icon"
         />
       </a>
@@ -37,7 +37,7 @@
       <a class="sidebar-item" href="./settings.html">
         <img
           class="sidebar-icon"
-          src="./icons/settings.svg"
+          src="{{ url_for('static', filename='icons/settings.svg') }}"
           alt="settings-icon"
         />
       </a>
@@ -101,7 +101,7 @@
           <button>
             <img
               style="width: 2rem; height: 1.2rem"
-              src="./icons/menu.svg"
+              src="{{ url_for('static', filename='icons/menu.svg') }}"
               alt="Results Menu Icon"
             />
           </button>
