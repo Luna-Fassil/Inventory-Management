@@ -44,5 +44,22 @@ def add_item():
     
     return jsonify({"message": "Item added successfully", "item": item}), 201 #alert item added
 
+# route to handle removing an item from the inventory
+@app.route("/remove", methods=["POST"])
+def remove_item():
+    data = request.json
+    if "id" not in data:
+        return jsonify({"error": "ID is required"}), 400 # return error if ID is missing
+
+    item_id = data["id"]
+    
+    # find item in inventory
+    for item in inventory:
+        if item["id"] == item_id:
+            inventory.remove(item) # remove the item from the inventory
+            return jsonify({"message": f"Item with ID {item_id} removed successfully"}), 200
+    # return an error if no matching item was found
+    return jsonify({"error": "Item not found"}), 404
+
 if __name__ == "__main__":
     app.run(debug=True)

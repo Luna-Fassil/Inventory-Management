@@ -176,11 +176,25 @@ function addItem(options) {
 
 //TODO: send the request to the server instead of here
 function deleteItem(id) {
-  let item_index = inventory.findIndex((item) => item.id === id);
-  inventory.splice(item_index, 1);
-
-  updateTable();
+  fetch("http://127.0.0.1:5000/remove", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id: id })  // Send the ID to Flask
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.error) {
+          alert("Error: " + data.error);
+      } else {
+          alert(data.message);
+          updateTable();  // Refresh inventory from Flask
+      }
+  })
+  .catch(error => console.error("Error:", error));
 }
+
 
 // TODO: send the request to the server instead of here
 function modifyItem(id, options = {}) {
