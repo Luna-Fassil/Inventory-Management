@@ -72,6 +72,7 @@ def edit_item():
         return jsonify({"error": "ID, quantity, price, and color are required"}), 400  # return error if any field is missing
 
     item_id = data["id"]
+    new_name = data["name"]
     new_quantity = int(data["quantity"])
     new_price = float(data["price"])
     new_color = data["color"]
@@ -80,6 +81,7 @@ def edit_item():
     for item in inventory:
         if item["id"] == item_id:
             print("Found Item:", item)  # Debugging: Log the item before updating
+            item["name"] = new_name
             item["quantity"] = new_quantity  # update the quantity of the item
             item["price"] = new_price  # update the price of the item
             item["color"] = new_color  # update the color of the item
