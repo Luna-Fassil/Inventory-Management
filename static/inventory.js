@@ -267,27 +267,26 @@ function updateTable() {
   let table = document.querySelector("table > tbody");
   table.innerHTML = ""; // Clear existing table data
 
-  // Fetch inventory from Flask backend
-  fetch("/inventory")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Fetched Data:", data); // Debugging: Log the fetched data
-      data.forEach((item) => {
-        let row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.id}</td>
-          <td>${item.name}</td>
-          <td>${item.quantity}</td>
-          <td>${item.price}</td>
-          <td>${item.color}</td>
-          <td>
-            <button class="edit-button" onclick="openEditPopup(${item.id})">
-              <img style="width: 1rem" src="./icons/edit.svg">
-            </button>
-          </td>
-        `;
-        table.appendChild(row); // Add the row to the table
-      });
+    //fetch inventory from Flask instead of local array
+    fetch("/inventory")
+    .then(response => response.json())//converst to json so can be used in js file
+    .then(data => {
+        data.forEach(item => {//loop through each item in inventory
+            let row = document.createElement("tr");//new row
+            row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price}</td>
+                <td>${item.color}</td>
+                <td>
+                    <button class="edit-button" onclick="openEditPopup(${item.id})">
+                        <img style="width: 1rem" src="./icons/edit.svg">
+                    </button>
+                </td>
+            `;
+            table.appendChild(row);//add this row to table
+        });
     })
     .catch((error) => console.error("Error fetching inventory:", error));
 }
