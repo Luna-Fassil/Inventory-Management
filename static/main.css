@@ -310,3 +310,8 @@ button {
 button.primary {
   background: var(--accent);
 }
+
+.delete {
+  background: #ff9191;
+  margin: 10px;
+}

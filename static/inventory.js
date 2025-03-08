@@ -1,159 +1,7 @@
-//! TEMP Just until backend is done
-let next_id = 0;
-let inventory = [
-  {
-    color: "red",
-    id: 0,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 1,
-    name: "asdf",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 2,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-  {
-    color: "red",
-    id: 3,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 4,
-    name: "aoeu",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 5,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-  {
-    color: "red",
-    id: 6,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 7,
-    name: "aoeu",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 8,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-  {
-    color: "red",
-    id: 9,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 10,
-    name: "aoeu",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 11,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-  {
-    color: "red",
-    id: 12,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 13,
-    name: "aoeu",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 14,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-  {
-    color: "red",
-    id: 15,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 16,
-    name: "aoeu",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 17,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-  {
-    color: "red",
-    id: 18,
-    name: "aoeu",
-    price: 1,
-    quantity: 2,
-  },
-  {
-    color: "blue",
-    id: 19,
-    name: "aoeu",
-    price: 3,
-    quantity: 4,
-  },
-  {
-    color: "green",
-    id: 20,
-    name: "aoeu",
-    price: 5,
-    quantity: 6,
-  },
-];
-
 let filters = {};
+let inventory = [];
 let editingId = -1;
 
-// DONE -> connected to Flask
 function addItem(options) {
   fetch("http://127.0.0.1:5000/add", {
     //sends request to flask backend
@@ -169,14 +17,12 @@ function addItem(options) {
         //error handle
         alert("Error: " + data.error);
       } else {
-        alert("Item added successfully!"); //success popup
         updateTable(); //get updated data from the backend
       }
     })
     .catch((error) => console.error("Error:", error));
 }
 
-//TODO: send the request to the server instead of here
 function deleteItem(id) {
   fetch("http://127.0.0.1:5000/remove", {
     method: "POST",
@@ -190,7 +36,6 @@ function deleteItem(id) {
       if (data.error) {
         alert("Error: " + data.error);
       } else {
-        alert(data.message);
         updateTable(); // Refresh inventory from Flask
       }
     })
@@ -224,7 +69,6 @@ function modifyItem(id, options = {}) {
       if (data.error) {
         alert("Error: " + data.error);
       } else {
-        alert(data.message); // Success message
         updateTable(); // Refresh the table after editing
       }
     })
@@ -283,9 +127,14 @@ function updateTable() {
                 <td>${item.price}</td>
                 <td>${item.color}</td>
                 <td>
-                    <button class="edit-button" onclick="openEditPopup(${item.id})">
-                        <img style="width: 1rem" src="/static/icons/edit.svg"">
-                    </button>
+                  <button class="edit-button" onclick="openEditPopup(${item.id})">
+                    <img style="width: 1rem" src="/static/icons/edit.svg"">
+                  </button>
+                </td>
+                <td>
+                  <button class="delete" onclick="deleteItem(${item.id})">
+                    <img style="width: 1rem" src="./static/icons/trash.svg"">
+                  </button>
                 </td>
             `;
         table.appendChild(row); //add this row to table
@@ -346,12 +195,6 @@ function initializeEditPopup() {
   // Close the popup when the close button is clicked
   edit_popup.querySelector(".close").addEventListener("click", () => {
     edit_popup.style.visibility = "hidden";
-  });
-
-  // Delete the item when the delete button is clicked
-  edit_popup.querySelector(".delete").addEventListener("click", () => {
-    deleteItem(editingId);
-    edit_popup.style.visibility = "hidden"; // Close the popup after deletion
   });
 
   // Reset the form and close the popup when the form is reset
