@@ -1,146 +1,107 @@
-let filters = {};
 let inventory = [];
+let filters = {};
 let editingId = -1;
 
-function addItem(options) {
-  fetch("http://127.0.0.1:5000/add", {
-    //sends request to flask backend
-    method: "POST", //using HTTP post method
-    headers: {
-      "Content-Type": "application/json", //tell flask we're sending JSON
-    },
-    body: JSON.stringify(options), //convert item details to JSON
-  })
-    .then((response) => response.json()) //convert server response to JSON
-    .then((data) => {
-      if (data.error) {
-        //error handle
-        alert("Error: " + data.error);
-      } else {
-        updateTable(); //get updated data from the backend
-      }
-    })
-    .catch((error) => console.error("Error:", error));
-}
-
-function deleteItem(id) {
-  fetch("http://127.0.0.1:5000/remove", {
+async function addItem(options) {
+  const response = await fetch("http://127.0.0.1:5000/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: id }), // Send the ID to Flask
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.error) {
-        alert("Error: " + data.error);
-      } else {
-        updateTable(); // Refresh inventory from Flask
-      }
-    })
-    .catch((error) => console.error("Error:", error));
+    body: JSON.stringify(options),
+  });
+
+  console.log(await response);
+
+  const data = await response.json();
+
+  if (!response.ok || data.error) {
+    alert(`Error: Failed to add item ${data.error}`);
+    return false;
+  }
+
+  await updateTable();
+  return true;
 }
 
-function modifyItem(id, options = {}) {
-  console.log("Sending Data to Backend:", {
-    id: id,
-    quantity: options.quantity,
-    price: options.price,
-    color: options.color,
-  }); // Debugging: Log the data being sent
+async function deleteItem(id) {
+  let response = await fetch("http://127.0.0.1:5000/remove", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: id }),
+  });
 
-  fetch("http://127.0.0.1:5000/edit", {
+  let data = await response.json();
+
+  if (!response.ok || data.error) {
+    alert(`Error: Failed to add item ${data.error}`);
+    return false;
+  }
+
+  await updateTable();
+}
+
+async function modifyItem(id, options = {}) {
+  let response = await fetch("http://127.0.0.1:5000/edit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
       id: id,
-      name: options.name, // Send the new name
-      quantity: options.quantity, // Send the new quantity
-      price: options.price, // Send the new price
-      color: options.color, // Send the new color
+      ...options,
     }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Backend Response:", data); // Debugging: Log the response from the backend
-      if (data.error) {
-        alert("Error: " + data.error);
-      } else {
-        updateTable(); // Refresh the table after editing
-      }
-    })
-    .catch((error) => console.error("Error:", error));
-}
-// TODO: Do this on the server instead of here
-function fetchResults(skip, amount, filters) {
-  let results = inventory.slice();
+  });
 
-  if (filters.search) {
-    results = results.filter(
-      (item) => item.name.includes(filters.search) || item.id == filters.search
-    );
+  let data = await response.json();
+
+  if (!response.ok || data.error) {
+    alert(`Error: Failed to add item ${data.error}`);
+    return false;
   }
 
-  if (filters.maxPrice) {
-    results = results.filter((item) => item.price < filters.maxPrice);
-  }
-
-  if (filters.minPrice) {
-    results = results.filter((item) => item.price > filters.minPrice);
-  }
-
-  if (filters.maxQuantity) {
-    results = results.filter((item) => item.quantity < filters.maxQuantity);
-  }
-
-  if (filters.minQuantity) {
-    results = results.filter((item) => item.quantity > filters.minQuantity);
-  }
-
-  if (filters.color) {
-    results = results.filter((item) => item.color == filters.color);
-  }
-
-  return results.slice(skip, amount);
+  await updateTable();
 }
 
-function updateTable() {
+async function updateTable() {
+  // Convert filters object to JSON string
+  const filtersJson = JSON.stringify(filters);
+  const amount = 10;
+  const skip = 0;
+
+  // Fetch inventory from Flask with filters
+  const response = await fetch(
+    `/inventory?filters=${encodeURIComponent(
+      filtersJson
+    )}&amount=${amount}&skip=${skip}`
+  );
+  const data = await response.json();
+  inventory = data;
+
   let table = document.querySelector("table > tbody");
   table.innerHTML = ""; // Clear existing table data
-
-  //fetch inventory from Flask instead of local array
-  fetch("/inventory")
-    .then((response) => response.json()) //converst to json so can be used in js file
-    .then((data) => {
-      console.log("Data: ", data);
-      inventory = data;
-      data.forEach((item) => {
-        //loop through each item in inventory
-        let row = document.createElement("tr"); //new row
-        row.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.name}</td>
-                <td>${item.quantity}</td>
-                <td>${item.price}</td>
-                <td>${item.color}</td>
-                <td>
-                  <button class="edit-button" onclick="openEditPopup(${item.id})">
-                    <img style="width: 1rem" src="/static/icons/edit.svg"">
-                  </button>
-                </td>
-                <td>
-                  <button class="delete" onclick="deleteItem(${item.id})">
-                    <img style="width: 1rem" src="./static/icons/trash.svg"">
-                  </button>
-                </td>
+  for (let item of data) {
+    //Insert each item into the table
+    let row = document.createElement("tr");
+    row.innerHTML = `
+              <td>${item.id}</td>
+              <td>${item.name}</td>
+              <td>${item.quantity}</td>
+              <td>${item.price}</td>
+              <td>${item.color}</td>
+              <td>
+                <button class="edit-button" onclick="openEditPopup(${item.id})">
+                  <img style="width: 1rem" src="/static/icons/edit.svg"">
+                </button>
+                <button class="delete" onclick="deleteItem(${item.id})">
+                  <img style="width: 1rem" src="./static/icons/trash.svg"">
+                </button>
+              </td>
             `;
-        table.appendChild(row); //add this row to table
-      });
-    })
-    .catch((error) => console.error("Error fetching inventory:", error));
+    table.appendChild(row); //add this row to table
+  }
 }
 
 function initializeAddPopup() {
@@ -232,7 +193,7 @@ function initializeFilters() {
   filtersForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    let searchQuery = document.querySelector("#search").value;
+    let searchQuery = document.querySelector("#search").value || undefined;
     let inputMinPrice =
       parseFloat(document.querySelector("input[name='min-price']").value) ||
       undefined;
@@ -260,10 +221,10 @@ function initializeFilters() {
   });
 }
 
-window.onload = () => {
+window.onload = async () => {
   initializeAddPopup();
   initializeEditPopup();
   initializeFilters();
 
-  updateTable();
+  await updateTable();
 };
