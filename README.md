@@ -55,7 +55,7 @@ Open your web browser and go to http://127.0.0.1:5000/ to access the inventory m
 
 
 ## UI design mockup
-(https://www.figma.com/design/LT2yhVPQxUzbOlMvply3Ip/Inventory-Managment-System-(Copy)?node-id=0-1&p=f&t=WaZxlNOoIfxaF1rW-0)
+https://www.figma.com/design/LT2yhVPQxUzbOlMvply3Ip/Inventory-Managment-System-(Copy)?node-id=0-1&p=f&t=WaZxlNOoIfxaF1rW-0
 
 ## Contributing
 We welcome contributions to the HyperLink Inventory Management System. Please fork the repository and submit a pull request with your changes.
