@@ -8,20 +8,6 @@
 ## Overview
 The HyperLink Inventory Management System is a web-based application designed to streamline inventory management for a clothing store. The system allows employees to add, edit, view, and remove clothing items from the inventory. It includes features such as search functionality, filtering by attributes (e.g., color, brand, season), and role-based access control.
 
-## Features Implemented in Iteration 1
-- **Add Clothing Items**: Users can add new clothing items to the inventory by specifying details such as name, color, quantity, and price.
-- **Edit Quantity and Details**: Users can edit the quantity and other details of existing items.
-- **View Stock**: Users can view the stock quantity and details of each clothing item.
-- **Remove Clothing Items**: Users can remove items from the inventory.
-- **Website Layout**: The website layout is designed with navigational icons, a search bar, filter panel, and sorting options.
-
-## Known Gaps and Limitations
-- **No Backend Storage**: Items disappear upon page refresh. A file system will be implemented to save inventory data.
-- **No User Authentication**: Anyone can access or modify inventory, leading to potential security issues.
-- **Search and Filtering**: The search bar and filter panel are not yet functional.
-- **Data Validation**: Incorrect values (e.g., negative numbers) are not recognized or flagged.
-- **Lack of Undo/History**: No version control system to undo accidental deletions or edits.
-
 ## Setup Instructions
 To run the HyperLink Inventory Management System locally, follow these steps:
 
@@ -41,6 +27,19 @@ To run the HyperLink Inventory Management System locally, follow these steps:
 4. **Access the Application**:
 Open your web browser and go to http://127.0.0.1:5000/ to access the inventory management system.
 
+## Features Implemented in Iteration 1
+- **Add Clothing Items**: Users can add new clothing items to the inventory by specifying details such as name, color, quantity, and price.
+- **Edit Quantity and Details**: Users can edit the quantity and other details of existing items.
+- **View Stock**: Users can view the stock quantity and details of each clothing item.
+- **Remove Clothing Items**: Users can remove items from the inventory.
+- **Website Layout**: The website layout is designed with navigational icons, a search bar, filter panel, and sorting options.
+
+## Known Gaps and Limitations
+- **No Backend Storage**: Items disappear upon page refresh. A file system will be implemented to save inventory data.
+- **No User Authentication**: Anyone can access or modify inventory, leading to potential security issues.
+- **Search and Filtering**: The search bar and filter panel are not yet functional.
+- **Data Validation**: Incorrect values (e.g., negative numbers) are not recognized or flagged.
+- **Lack of Undo/History**: No version control system to undo accidental deletions or edits.
 
 ## Repository and Project Board
 - **GitHub Repository**: [HyperLink](https://github.com/LunaFassil/HyperLink)
