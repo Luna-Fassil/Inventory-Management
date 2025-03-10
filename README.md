@@ -1,8 +1,3 @@
-# HyperLink Inventory System
-
-[UI design mockup](https://www.figma.com/design/LT2yhVPQxUzbOlMvply3Ip/Inventory-Managment-System-(Copy)?node-id=0-1&p=f&t=WaZxlNOoIfxaF1rW-0)
-
-
 # HyperLink Inventory Management System
 
 ## Overview
@@ -57,6 +52,10 @@ Open your web browser and go to http://127.0.0.1:5000/ to access the inventory m
 - **Search and Filtering**: Enable search functionality by item name or ID and make the filter panel functional.
 - **Data Validation**: Add validation for user inputs to prevent errors.
 - **Version Control**: Implement a system to track changes and allow undo functionality.
+
+
+## UI design mockup
+(https://www.figma.com/design/LT2yhVPQxUzbOlMvply3Ip/Inventory-Managment-System-(Copy)?node-id=0-1&p=f&t=WaZxlNOoIfxaF1rW-0)
 
 ## Contributing
 We welcome contributions to the HyperLink Inventory Management System. Please fork the repository and submit a pull request with your changes.
