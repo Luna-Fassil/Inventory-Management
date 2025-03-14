@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/main.css" />
+  </head>
+  <body
+    style="
+      background: var(--accent);
+      background: radial-gradient(circle, var(--accent) 30%, var(--base) 70%);
+      display: grid;
+      grid-template-columns: auto;
+      place-items: center;
+    "
+  >
+    <div
+      style="
+        background: var(--section);
+        padding: var(--gap-l);
+        border-radius: var(--radius);
+      "
+    >
+      <h2 style="color: var(subtext)">Login</h2>
+      <form
+        style="display: flex; flex-direction: column; padding: 30px; gap: 40px"
+        action=""
+      >
+        <label for="username"
+          >Username
+          <input
+            style="width: 300px"
+            type="username"
+            name="username"
+            id="username"
+          />
+        </label>
+        <label for="password"
+          >Password
+          <input type="password" name="password" id="password" />
+        </label>
+        <button class="primary" style="grid-column: span 2" type="submit">
+          Login
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

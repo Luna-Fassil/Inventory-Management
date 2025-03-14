@@ -24,6 +24,7 @@
                 ruff
                 flask-cors
                 flask
+                pytest
               ])
           )
         ];
