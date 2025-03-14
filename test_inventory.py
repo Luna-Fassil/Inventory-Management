@@ -8,21 +8,21 @@ class TestInventoryManager(unittest.TestCase):
 
     def test_add_item(self):
         # Test adding a valid item
-        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        data = {"name": "Shirt", "quantity": 10, "price": 20, "color": "red"}
         response, status_code = self.inventory_manager.add_item(data)
         self.assertEqual(status_code, 201)
         self.assertEqual(response["message"], "Item added successfully")
         self.assertEqual(len(self.inventory_manager.inventory), 1)
 
         # Test adding an item with missing fields
-        invalid_data = {"name": "Banana", "quantity": 5}
+        invalid_data = {"name": "Shirt", "quantity": 10}
         response, status_code = self.inventory_manager.add_item(invalid_data)
         self.assertEqual(status_code, 400)
         self.assertEqual(response["error"], "Missing required fields")
 
     def test_remove_item(self):
         # Add an item to the inventory
-        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        data = {"name": "Shirt", "quantity": 10, "price": 20, "color": "red"}
         self.inventory_manager.add_item(data)
 
         # Test removing an existing item
@@ -38,27 +38,27 @@ class TestInventoryManager(unittest.TestCase):
 
     def test_edit_item(self):
         # Add an item to the inventory
-        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        data = {"name": "Shirt", "quantity": 10, "price": 20, "color": "red"}
         self.inventory_manager.add_item(data)
 
         # Test editing an existing item
-        updated_data = {"id": 0, "name": "Green Apple", "quantity": 15, "price": 2.99, "color": "green"}
+        updated_data = {"id": 0, "name": "Pant", "quantity": 1, "price": 20, "color": "blue"}
         response, status_code = self.inventory_manager.edit_item(updated_data)
         self.assertEqual(status_code, 200)
         self.assertEqual(response["message"], "Item with ID 0 updated successfully")
-        self.assertEqual(self.inventory_manager.inventory[0]["name"], "Green Apple")
-        self.assertEqual(self.inventory_manager.inventory[0]["quantity"], 15)
+        self.assertEqual(self.inventory_manager.inventory[0]["name"], "Pant")
+        self.assertEqual(self.inventory_manager.inventory[0]["quantity"], 1)
 
         # Test editing a non-existent item
-        invalid_data = {"id": 99, "name": "Banana", "quantity": 5, "price": 0.99, "color": "yellow"}
+        invalid_data = {"id": 99, "name": "Socks", "quantity": 5, "price": 2, "color": "yellow"}
         response, status_code = self.inventory_manager.edit_item(invalid_data)
         self.assertEqual(status_code, 404)
         self.assertEqual(response["error"], "Item not found")
 
     def test_get_inventory(self):
         # Add some items to the inventory
-        self.inventory_manager.add_item({"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"})
-        self.inventory_manager.add_item({"name": "Banana", "quantity": 5, "price": 0.99, "color": "yellow"})
+        self.inventory_manager.add_item({"name": "Shirt", "quantity": 10, "price": 20, "color": "red"})
+        self.inventory_manager.add_item({"name": "Socks", "quantity": 5, "price": 2, "color": "yellow"})
 
         # Test getting the full inventory
         inventory = self.inventory_manager.get_inventory(amount=10, skip=0, filters={})
@@ -67,7 +67,7 @@ class TestInventoryManager(unittest.TestCase):
         # Test pagination
         inventory = self.inventory_manager.get_inventory(amount=1, skip=0, filters={})
         self.assertEqual(len(inventory), 1)
-        self.assertEqual(inventory[0]["name"], "Apple")
+        self.assertEqual(inventory[0]["name"], "Shirt")
 
 if __name__ == "__main__":
     unittest.main()

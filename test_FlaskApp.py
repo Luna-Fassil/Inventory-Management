@@ -15,20 +15,20 @@ class TestFlaskApp(unittest.TestCase):
 
     def test_add_item_route(self):
         # Test adding an item via the /add route
-        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        data = {"name": "Shirt", "quantity": 10, "price": 20, "color": "red"}
         response = self.app.post("/add", json=data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(json.loads(response.data)["message"], "Item added successfully")
 
         # Test adding an item with missing fields
-        invalid_data = {"name": "Banana", "quantity": 5}
+        invalid_data = {"name": "Shirt", "quantity": 10}
         response = self.app.post("/add", json=invalid_data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.data)["error"], "Missing required fields")
 
     def test_remove_item_route(self):
         # Add an item to the inventory
-        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        data = {"name": "Shirt", "quantity": 10, "price": 20, "color": "red"}
         self.app.post("/add", json=data)
 
         # Test removing an existing item
@@ -43,25 +43,25 @@ class TestFlaskApp(unittest.TestCase):
 
     def test_edit_item_route(self):
         # Add an item to the inventory
-        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        data = {"name": "Shirt", "quantity": 10, "price": 20, "color": "red"}
         self.app.post("/add", json=data)
 
         # Test editing an existing item
-        updated_data = {"id": 0, "name": "Green Apple", "quantity": 15, "price": 2.99, "color": "green"}
+        updated_data = {"id": 0, "name": "Pant", "quantity": 1, "price": 20, "color": "blue"}
         response = self.app.post("/edit", json=updated_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.data)["message"], "Item with ID 0 updated successfully")
 
         # Test editing a non-existent item
-        invalid_data = {"id": 99, "name": "Banana", "quantity": 5, "price": 0.99, "color": "yellow"}
+        invalid_data = {"id": 99, "name": "Socks", "quantity": 5, "price": 2, "color": "yellow"}
         response = self.app.post("/edit", json=invalid_data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(json.loads(response.data)["error"], "Item not found")
 
     def test_get_inventory_route(self):
         # Add some items to the inventory
-        self.app.post("/add", json={"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"})
-        self.app.post("/add", json={"name": "Banana", "quantity": 5, "price": 0.99, "color": "yellow"})
+        self.app.post("/add", json={"name": "Shirt", "quantity": 10, "price": 20, "color": "red"})
+        self.app.post("/add", json={"name": "Socks", "quantity": 5, "price": 2, "color": "yellow"})
 
         # Test getting the full inventory
         response = self.app.get("/inventory")
@@ -72,6 +72,7 @@ class TestFlaskApp(unittest.TestCase):
         response = self.app.get("/inventory?amount=1&skip=0")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(json.loads(response.data)), 1)
+        self.assertEqual(json.loads(response.data)[0]["name"], "Shirt")
 
 if __name__ == "__main__":
     unittest.main()
