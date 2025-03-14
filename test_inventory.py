@@ -1,93 +1,73 @@
-import pytest
-import json
-from inventory import app  # import app form inventory file
+import unittest
+from inventory import InventoryManager
 
-@pytest.fixture
-def client():
-    print("Creates a test client for  Flask")
-    app.config["TESTING"] = True
-    with app.test_client() as client:
-        yield client
+class TestInventoryManager(unittest.TestCase):
+    def setUp(self):
+        """Set up a fresh instance of InventoryManager for each test."""
+        self.inventory_manager = InventoryManager()
 
-def test_home(client):
-    print("Test if the home page loads correctly")
-    response = client.get("/")
-    assert response.status_code == 200
-    print("home page loaded")
+    def test_add_item(self):
+        # Test adding a valid item
+        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        response, status_code = self.inventory_manager.add_item(data)
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["message"], "Item added successfully")
+        self.assertEqual(len(self.inventory_manager.inventory), 1)
 
-def test_get_empty_inventory(client):
-    print("Test retrieving inventory when it's empty")
-    response = client.get("/inventory")
-    assert response.status_code == 200
-    assert response.json == []  #initially empty inventory
+        # Test adding an item with missing fields
+        invalid_data = {"name": "Banana", "quantity": 5}
+        response, status_code = self.inventory_manager.add_item(invalid_data)
+        self.assertEqual(status_code, 400)
+        self.assertEqual(response["error"], "Missing required fields")
 
-def test_add_item(client):
-    print("Test adding an item to the inventory")
-    item_data = {
-        "name": "Shirt",
-        "quantity": 10,
-        "price": 200,
-        "color": "Green",
-    }
-    response = client.post("/add", json=item_data)
-    print("adding item - Name: Shirt, Quantity: 10, Price: 200, Color: Green")
-    
-    assert response.status_code == 201
-    data = response.json
-    assert data["message"] == "Item added successfully"
-    assert data["item"]["name"] == "Shirt"
-    assert data["item"]["quantity"] == 10
-    assert data["item"]["price"] == 200
-    assert data["item"]["color"] == "Green"
+    def test_remove_item(self):
+        # Add an item to the inventory
+        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        self.inventory_manager.add_item(data)
 
-def test_get_inventory(client):
-    print("Test retrieving inventory with one item")
-    response = client.get("/inventory")
-    assert response.status_code == 200
-    assert len(response.json) == 1  #inventory should have 1 item
+        # Test removing an existing item
+        response, status_code = self.inventory_manager.remove_item(0)
+        self.assertEqual(status_code, 200)
+        self.assertEqual(response["message"], "Item with ID 0 removed successfully")
+        self.assertEqual(len(self.inventory_manager.inventory), 0)
 
-def test_remove_item(client):
-    print("Test removing an item from inventory")
-    item_id = 0  #assume it has id 0
-    response = client.delete("/remove", json={"id": item_id})
-    assert response.status_code == 200
-    assert response.json["message"] == f"Item with ID {item_id} removed successfully"
+        # Test removing a non-existent item
+        response, status_code = self.inventory_manager.remove_item(99)
+        self.assertEqual(status_code, 404)
+        self.assertEqual(response["error"], "Item not found")
 
-def test_remove_nonexistent_item(client):
-    print("Test removing an item that does not exist")
-    response = client.delete("/remove", json={"id": 999})  #id that doesnt exist
-    assert response.status_code == 404
-    assert response.json["error"] == "Item not found"
+    def test_edit_item(self):
+        # Add an item to the inventory
+        data = {"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"}
+        self.inventory_manager.add_item(data)
 
-def test_edit_item(client):
-    print("Test editing an item in inventory")
-    #add an item to edit
-    item_data = {
-        "name": "Sweater",
-        "quantity": 53,
-        "price": 500,
-        "color": "Yellow",
-    }
-    client.post("/add", json=item_data)
+        # Test editing an existing item
+        updated_data = {"id": 0, "name": "Green Apple", "quantity": 15, "price": 2.99, "color": "green"}
+        response, status_code = self.inventory_manager.edit_item(updated_data)
+        self.assertEqual(status_code, 200)
+        self.assertEqual(response["message"], "Item with ID 0 updated successfully")
+        self.assertEqual(self.inventory_manager.inventory[0]["name"], "Green Apple")
+        self.assertEqual(self.inventory_manager.inventory[0]["quantity"], 15)
 
-    #edit item
-    edit_data = {
-        "id": 1,  #ID 1
-        "name": "Dress",
-        "quantity": 8,
-        "price": 700,
-        "color": "Blue",
-    }
-    response = client.post("/edit", json=edit_data)
+        # Test editing a non-existent item
+        invalid_data = {"id": 99, "name": "Banana", "quantity": 5, "price": 0.99, "color": "yellow"}
+        response, status_code = self.inventory_manager.edit_item(invalid_data)
+        self.assertEqual(status_code, 404)
+        self.assertEqual(response["error"], "Item not found")
 
-    assert response.status_code == 200
-    assert response.json["item"]["name"] == "Dress"
-    assert response.json["item"]["quantity"] == 8
-    assert response.json["item"]["price"] == 700
-    assert response.json["item"]["color"] == "Blue"
+    def test_get_inventory(self):
+        # Add some items to the inventory
+        self.inventory_manager.add_item({"name": "Apple", "quantity": 10, "price": 1.99, "color": "red"})
+        self.inventory_manager.add_item({"name": "Banana", "quantity": 5, "price": 0.99, "color": "yellow"})
 
-def test_edit_nonexistent_item(client):
-    print("Test editing an item that does not exist")
-    response = client.post("/edit", json={"id": 999, "name": "Fake", "quantity": 1, "price": 10, "color": "Red"})
-    assert response.status_code == 404
-    assert response.json["error"] == "Item not found"
+        # Test getting the full inventory
+        inventory = self.inventory_manager.get_inventory(amount=10, skip=0, filters={})
+        self.assertEqual(len(inventory), 2)
+
+        # Test pagination
+        inventory = self.inventory_manager.get_inventory(amount=1, skip=0, filters={})
+        self.assertEqual(len(inventory), 1)
+        self.assertEqual(inventory[0]["name"], "Apple")
+
+if __name__ == "__main__":
+    unittest.main()
