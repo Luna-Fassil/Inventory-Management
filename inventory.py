@@ -17,6 +17,10 @@ next_id = 0
 def home():
     return render_template("inventory.html")  # flask will use HTML File
 
+@app.route("/login")
+def login():
+    return render_template("login.html")  # flask will use HTML File
+
 
 @app.route("/inventory", methods=["GET"])
 def get_inventory():
