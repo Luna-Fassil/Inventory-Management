@@ -4,24 +4,25 @@ from inventory import app  # import app form inventory file
 
 @pytest.fixture
 def client():
-    """Creates a test client for the Flask app."""
+    print("Creates a test client for  Flask")
     app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
 def test_home(client):
-    """Test if the home page loads correctly."""
+    print("Test if the home page loads correctly")
     response = client.get("/")
     assert response.status_code == 200
+    print("home page loaded")
 
 def test_get_empty_inventory(client):
-    """Test retrieving inventory when it's empty."""
+    print("Test retrieving inventory when it's empty")
     response = client.get("/inventory")
     assert response.status_code == 200
     assert response.json == []  #initially empty inventory
 
 def test_add_item(client):
-    """Test adding an item to the inventory."""
+    print("Test adding an item to the inventory")
     item_data = {
         "name": "Shirt",
         "quantity": 10,
@@ -29,6 +30,7 @@ def test_add_item(client):
         "color": "Green",
     }
     response = client.post("/add", json=item_data)
+    print("adding item - Name: Shirt, Quantity: 10, Price: 200, Color: Green")
     
     assert response.status_code == 201
     data = response.json
@@ -39,26 +41,26 @@ def test_add_item(client):
     assert data["item"]["color"] == "Green"
 
 def test_get_inventory(client):
-    """Test retrieving inventory with one item."""
+    print("Test retrieving inventory with one item")
     response = client.get("/inventory")
     assert response.status_code == 200
     assert len(response.json) == 1  #inventory should have 1 item
 
 def test_remove_item(client):
-    """Test removing an item from inventory."""
+    print("Test removing an item from inventory")
     item_id = 0  #assume it has id 0
     response = client.delete("/remove", json={"id": item_id})
     assert response.status_code == 200
     assert response.json["message"] == f"Item with ID {item_id} removed successfully"
 
 def test_remove_nonexistent_item(client):
-    """Test removing an item that does not exist."""
+    print("Test removing an item that does not exist")
     response = client.delete("/remove", json={"id": 999})  #id that doesnt exist
     assert response.status_code == 404
     assert response.json["error"] == "Item not found"
 
 def test_edit_item(client):
-    """Test editing an item in inventory."""
+    print("Test editing an item in inventory")
     #add an item to edit
     item_data = {
         "name": "Sweater",
@@ -85,7 +87,7 @@ def test_edit_item(client):
     assert response.json["item"]["color"] == "Blue"
 
 def test_edit_nonexistent_item(client):
-    """Test editing an item that does not exist."""
+    print("Test editing an item that does not exist")
     response = client.post("/edit", json={"id": 999, "name": "Fake", "quantity": 1, "price": 10, "color": "Red"})
     assert response.status_code == 404
     assert response.json["error"] == "Item not found"
