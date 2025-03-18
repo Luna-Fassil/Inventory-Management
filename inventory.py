@@ -2,12 +2,36 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import json
+import os
 
 class InventoryManager:
     def __init__(self):
+        self.filepath = "inventory.json" #saves inventory to json file instead of locally
         self.inventory = []
         self.next_id = 0
+        self.load_inventory()
 
+    #load inventory function 
+    def load_inventory(self):
+        if os.path.exists(self.filepath):#if json file exists
+            with open(self.filepath, "r") as file:
+                #try to load json file first 
+                try:
+                    data = json.load(file)
+                    self.inventory = data.get("inventory", [])
+                    self.next_id = data.get("next_id", 0)
+                except json.JSONDecodeError:
+                    self.inventory = []
+                    self.next_id = 0
+        else:#create a new one 
+            self.save_inventory()
+
+    #save inventory to json file
+    def save_inventory(self):
+        with open(self.filepath, "w") as file:#write to file 
+            json.dump({"inventory": self.inventory, "next_id": self.next_id}, file, indent=4)#tab between info 
+
+    #add item 
     def add_item(self, data):
         if not data or not all(k in data for k in ("name", "quantity", "price", "color")):
             return {"error": "Missing required fields"}, 400
@@ -21,12 +45,14 @@ class InventoryManager:
         }
         self.inventory.append(item)
         self.next_id += 1
+        self.save_inventory()#save inventory to write to file
         return {"message": "Item added successfully", "item": item}, 201
 
     def remove_item(self, item_id):
         for item in self.inventory:
             if item["id"] == item_id:
                 self.inventory.remove(item)
+                self.save_inventory()#save inventory to edit file
                 return {"message": f"Item with ID {item_id} removed successfully"}, 200
         return {"error": "Item not found"}, 404
 
@@ -46,6 +72,7 @@ class InventoryManager:
                 item["quantity"] = new_quantity
                 item["price"] = new_price
                 item["color"] = new_color
+                self.save_inventory()#save inventory to remove from file
                 return {"message": f"Item with ID {item_id} updated successfully", "item": item}, 200
         return {"error": "Item not found"}, 404
 
@@ -55,6 +82,8 @@ class InventoryManager:
         paginated_inventory = filtered_inventory[skip : skip + amount]
         return paginated_inventory
 
+
+#flask app class
 class FlaskApp:
     def __init__(self):
         self.app = Flask(__name__)
@@ -66,6 +95,10 @@ class FlaskApp:
         @self.app.route("/")
         def home():
             return render_template("inventory.html")
+
+        @self.app.route("/login")
+        def login():
+            return render_template("login.html")
 
         @self.app.route("/inventory", methods=["GET"])
         def get_inventory():
