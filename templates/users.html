@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='main.css') }}"
+    />
+    <!--changed url to inside static folder-->
+    <title>Users</title>
+  </head>
+  <body>
+    <script
+      src="{{ url_for('static', filename='users.js') }}"
+      defer
+    ></script>
+    <!--changed url to inside static folder-->
+    <nav id="sidebar" class="panel">
+      <a class="sidebar-item" href="/">
+        <img
+          class="sidebar-icon"
+          src="{{ url_for('static', filename='icons/inventory.svg') }}"
+          alt="inventory-icon"
+        />
+      </a>
+      <a class="sidebar-item active" href="./users">
+        <img
+          class="sidebar-icon"
+          src="{{ url_for('static', filename='icons/people.svg') }}"
+          alt="activity-icon"
+        />
+      </a>
+      <div class="sidebar-spacer"></div>
+      <a class="sidebar-item" href="./settings.html">
+        <img
+          class="sidebar-icon"
+          src="{{ url_for('static', filename='icons/settings.svg') }}"
+          alt="settings-icon"
+        />
+      </a>
+    </nav>
+    <main id="users" class="panel" style="grid-template-columns: auto">
+      <div class="results">
+        <div class="results-controls">
+          <button id="add-user-button">Add +</button>
+          <button>
+            <img
+              style="width: 2rem; height: 1.2rem"
+              src="{{ url_for('static', filename='icons/menu.svg') }}"
+              alt="Results Menu Icon"
+            />
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Color</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <div id="add-popup" class="popup-background">
+      <div class="popup" class="panel">
+        <div class="popup-header">
+          <h2>Add User</h2>
+          <button class="close">X</button>
+        </div>
+        <div class="popup-body">
+          <form id="add-user-form" action="">
+            <div class="form-group">
+              <label for="product-name">Product Name</label>
+              <input
+                type="text"
+                id="product-name"
+                placeholder="Shirt"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" placeholder="1" required />
+            </div>
+
+            <div class="form-group">
+              <label for="price">Price</label>
+              <input type="number" id="price" placeholder="20" required />
+            </div>
+
+            <div class="form-group">
+              <label for="color">Color</label>
+              <select id="color" required>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+                <option value="purple">Purple</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              style="grid-column: span 2"
+              class="submit primary"
+            >
+              Add User
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="edit-popup" class="popup-background">
+      <div class="popup" class="panel">
+        <div class="popup-header">
+          <h2>Edit User</h2>
+          <button class="close">X</button>
+        </div>
+        <div class="popup-body">
+          <form action="">
+            <label for="product-name"
+              >Product Name
+              <input
+                type="text"
+                id="product-name"
+                placeholder="Shirt"
+                required
+              />
+            </label>
+
+            <label for="price">
+              Price
+              <input type="number" id="price" placeholder="20" required />
+            </label>
+
+            <label for="quantity"
+              >Quantity
+              <input type="number" id="quantity" placeholder="1" required />
+            </label>
+
+            <div class="form-group">
+              <label for="color">Color</label>
+              <select id="color" required>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+                <option value="purple">Purple</option>
+              </select>
+            </div>
+            <!-- We may want to move this later so it doesn't get clicked accidently -->
+            <button class="close">Cancel</button>
+            <button type="submit" class="submit primary">Apply Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

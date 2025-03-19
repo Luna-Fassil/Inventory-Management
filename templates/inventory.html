@@ -17,25 +17,17 @@
     ></script>
     <!--changed url to inside static folder-->
     <nav id="sidebar" class="panel">
-      <a class="sidebar-item" href="./overview.html">
-        <!--TODO: change image sources to inside static folder-->
-        <img
-          class="sidebar-icon"
-          src="{{ url_for('static', filename='icons/overview.svg') }}"
-          alt="overview-icon"
-        />
-      </a>
-      <a class="sidebar-item active" href="#">
+      <a class="sidebar-item active" href="/">
         <img
           class="sidebar-icon"
           src="{{ url_for('static', filename='icons/inventory.svg') }}"
           alt="inventory-icon"
         />
       </a>
-      <a class="sidebar-item" href="./settings.html">
+      <a class="sidebar-item" href="./users">
         <img
           class="sidebar-icon"
-          src="{{ url_for('static', filename='icons/activity.svg') }}"
+          src="{{ url_for('static', filename='icons/people.svg') }}"
           alt="activity-icon"
         />
       </a>
