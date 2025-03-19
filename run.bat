@@ -1,0 +1,6 @@
+@echo off
+echo Activating Virtual Environment...
+call venv\Scripts\activate
+echo Running Flask App...
+python inventory.py
+pause
