@@ -1,0 +1,11 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "username": "test_user",
+            "password": "password123",
+            "role": "employee"
+        }
+    ],
+    "next_id": 2
+}

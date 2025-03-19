@@ -164,7 +164,8 @@ select {
 }
 
 /* Results Table */
-#inventory {
+#inventory,
+#users {
   display: grid;
   grid-template-columns: auto 1fr;
 
