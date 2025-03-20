@@ -7,7 +7,10 @@ async function addUser(options) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(options),
+    body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
+      ...options,
+    }),
   });
 
   const data = await response.json();
@@ -27,7 +30,10 @@ async function deleteUser(id) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: id }),
+    body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
+      id: id,
+    }),
   });
 
   let data = await response.json();
@@ -48,6 +54,7 @@ async function modifyUser(id, options = {}) {
     },
     body: JSON.stringify({
       id: id,
+      token: localStorage.getItem("sessionToken"),
       ...options,
     }),
   });
@@ -76,6 +83,7 @@ async function updateTable() {
             <td>${user.id}</td>
             <td>${user.username}</td>
             <td>${user.email}</td>
+            <td>${user.password}</td>
             <td>${user.role}</td>
             <td>
                 <button class="edit-button" onclick="openEditPopup(${user.id})">
