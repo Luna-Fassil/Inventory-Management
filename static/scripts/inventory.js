@@ -8,7 +8,7 @@ async function addItem(options) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(options),
+    body: JSON.stringify({ token: localStorage.getItem("sessionToken"),...options }),
   });
 
   console.log(await response);
@@ -30,13 +30,13 @@ async function deleteItem(id) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: id }),
+    body: JSON.stringify({ token: localStorage.getItem("sessionToken"), id: id }),
   });
 
   let data = await response.json();
 
   if (!response.ok || data.error) {
-    alert(`Error: Failed to add item ${data.error}`);
+    alert(`Error: Failed to delete item ${data.error}`);
     return false;
   }
 
@@ -50,6 +50,7 @@ async function modifyItem(id, options = {}) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
       id: id,
       ...options,
     }),
@@ -67,16 +68,23 @@ async function modifyItem(id, options = {}) {
 
 async function updateTable() {
   // Convert filters object to JSON string
-  const filtersJson = JSON.stringify(filters);
   const amount = 10;
   const skip = 0;
 
   // Fetch inventory from Flask with filters
-  const response = await fetch(
-    `/inventory?filters=${encodeURIComponent(
-      filtersJson
-    )}&amount=${amount}&skip=${skip}`
-  );
+  const response = await fetch("/inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
+      filters: filters,
+      amount: amount,
+      skip: skip
+    })
+  });
+
   const data = await response.json();
   inventory = data;
 
@@ -222,6 +230,7 @@ function initializeFilters() {
 }
 
 window.onload = async () => {
+  console.log(localStorage.getItem("sessionToken"));
   initializeAddPopup();
   initializeEditPopup();
   initializeFilters();

@@ -28,6 +28,11 @@
       place-items: center;
     "
   >
+    <div style=" background: var(--accent); border-radius: var(--radius); padding: var(--gap); position: absolute; top: 10px; left: 10px">
+      default usernames [admin, manager, employee, guest]<br>
+      default password [password]
+    </div>
+    <script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
     <div
       style="
         background: var(--section);
