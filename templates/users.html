@@ -7,15 +7,24 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='main.css') }}"
     />
-    <!--changed url to inside static folder-->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-light.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-dark.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: dark)"
+    />
     <title>Users</title>
   </head>
   <body>
-    <script
-      src="{{ url_for('static', filename='users.js') }}"
-      defer
-    ></script>
-    <!--changed url to inside static folder-->
+    <script src="{{ url_for('static', filename='/scripts/users.js') }}" defer></script>
+
+    <!-- Nav Bar -->
     <nav id="sidebar" class="panel">
       <a class="sidebar-item" href="/">
         <img
@@ -40,6 +49,8 @@
         />
       </a>
     </nav>
+
+    <!-- Users Table -->
     <main id="users" class="panel" style="grid-template-columns: auto">
       <div class="results">
         <div class="results-controls">
@@ -57,10 +68,10 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Color</th>
+                <th>Username</th>
+                <th>email</th>
+                <th>Password</th>
+                <th>Role</th>
                 <th></th>
               </tr>
             </thead>
@@ -69,6 +80,8 @@
         </div>
       </div>
     </main>
+
+    <!-- Add Popup -->
     <div id="add-popup" class="popup-background">
       <div class="popup" class="panel">
         <div class="popup-header">
@@ -78,33 +91,42 @@
         <div class="popup-body">
           <form id="add-user-form" action="">
             <div class="form-group">
-              <label for="product-name">Product Name</label>
+              <label for="username">Username</label>
               <input
                 type="text"
-                id="product-name"
-                placeholder="Shirt"
+                id="username"
+                placeholder="User Name"
                 required
               />
             </div>
 
             <div class="form-group">
-              <label for="quantity">Quantity</label>
-              <input type="number" id="quantity" placeholder="1" required />
+              <label for="password">Password</label>
+              <input
+                type="text"
+                id="password"
+                placeholder="12345678"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label for="price">Price</label>
-              <input type="number" id="price" placeholder="20" required />
+              <label for="email">Email</label>
+              <input
+                type="text"
+                id="email"
+                placeholder="email@email.com"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label for="color">Color</label>
-              <select id="color" required>
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
-                <option value="green">Green</option>
-                <option value="yellow">Yellow</option>
-                <option value="purple">Purple</option>
+              <label for="role">Role</label>
+              <select id="role" required>
+                <option value="guest">Guest</option>
+                <option value="employee">Employee</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
             <button
@@ -119,6 +141,7 @@
       </div>
     </div>
 
+    <!-- Edit Popup -->
     <div id="edit-popup" class="popup-background">
       <div class="popup" class="panel">
         <div class="popup-header">
@@ -127,38 +150,47 @@
         </div>
         <div class="popup-body">
           <form action="">
-            <label for="product-name"
-              >Product Name
+            <div class="form-group">
+              <label for="username">Username</label>
               <input
                 type="text"
-                id="product-name"
-                placeholder="Shirt"
+                id="username"
+                placeholder="User Name"
                 required
               />
-            </label>
-
-            <label for="price">
-              Price
-              <input type="number" id="price" placeholder="20" required />
-            </label>
-
-            <label for="quantity"
-              >Quantity
-              <input type="number" id="quantity" placeholder="1" required />
-            </label>
+            </div>
 
             <div class="form-group">
-              <label for="color">Color</label>
-              <select id="color" required>
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
-                <option value="green">Green</option>
-                <option value="yellow">Yellow</option>
-                <option value="purple">Purple</option>
+              <label for="password">Password</label>
+              <input
+                type="text"
+                id="password"
+                placeholder="12345678"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="text"
+                id="email"
+                placeholder="email@email.com"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="role">Role</label>
+              <select id="role" required>
+                <option value="guest">Guest</option>
+                <option value="employee">Employee</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
-            <!-- We may want to move this later so it doesn't get clicked accidently -->
-            <button class="close">Cancel</button>
+            <!-- We may want to move this later so it doesn't get clicked accidentally -->
+            <button type="reset" class="close">Cancel</button>
             <button type="submit" class="submit primary">Apply Changes</button>
           </form>
         </div>

@@ -1,50 +1,61 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import json
 import os
 
+# Users may be either a guest, employee, manager, or admin
+# guest: can view inventory
+# employee: can view inventory, edit items
+# manager: can view inventory, edit items, add items, remove items, add employee users, remove employee users, edit users
+# admin: can view inventory, edit items, add items, remove items and users, edit users, add managers, remove managers, edit managers
 class UserManager:
-    # Users may be either a guest, employee, manager, or admin
-    # guest: can view inventory
-    # employee: can view inventory, edit items
-    # manager: can view inventory, edit items, add items, remove items, add employee users, remove employee users, edit users
-    # admin: can view inventory, edit items, add items, remove items and users, edit users, add managers, remove managers, edit managers
-    
     def __init__(self):
-        # Create data directory if it doesn't exist
-        os.makedirs("data", exist_ok=True)
-        self.filepath = "data/users.json"
         self.users = []
         self.sessions = []
         self.next_id = 0
-        self.load_users()
         
-    def load_users(self):
-        if os.path.exists(self.filepath):
-            with open(self.filepath, "r") as file:
-                try:
-                    data = json.load(file)
-                    self.users = data.get("users", [])
-                    self.next_id = data.get("next_id", 0)
-                except json.JSONDecodeError:
-                    self.users = []
-                    self.next_id = 0
-        else:
+        self.filepath = "data/users.json"
+        # if file doesn't path exist and create it if it doesn't
+        if not os.path.exists(self.filepath):
             self.save_users()
 
+        self.load_users()
+
+    def load_users(self):
+        with open(self.filepath, "r") as file:
+            data = json.load(file)
+            self.users = data.get("users", [])
+            self.next_id = data.get("next_id", 0)
+
     def save_users(self):
+        os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
+
         with open(self.filepath, "w") as file:
             json.dump({"users": self.users, "next_id": self.next_id}, file, indent=4)
 
     def add_user(self, data):
-        if not data or not all(k in data for k in ("username", "password", "role")):
-            return {"error": "Missing required fields"}, 400
+        # Check if required data was provided
+        if not data:
+            return {"error": "No data provided"}, 400
         
-        # Check if username already exists
-        if any(user["username"] == data["username"] for user in self.users):
-            return {"error": "Username already exists"}, 400
+        if "username" not in data:
+            return {"error": "Username is required"}, 400
+        
+        if "email" not in data:
+            return {"error": "Email is required"}, 400
+        
+        if "password" not in data:
+            return {"error": "Password is required"}, 400
+        
+        if "role" not in data:
+            return {"error": "Role is required"}, 400
+        
+        # Check if email already exists
+        new_email = data["email"]
+        if any(user["email"] == new_email for user in self.users):
+            return {"error": "Email already exists"}, 400
 
-        # Validate role
+        # Check if role is valid
         valid_roles = ["guest", "employee", "manager", "admin"]
         if data["role"] not in valid_roles:
             return {"error": "Invalid role"}, 400
@@ -52,44 +63,80 @@ class UserManager:
         user = {
             "id": self.next_id,
             "username": data["username"],
-            "password": data["password"],  # In production, this should be hashed
-            "role": data["role"]
+            "email": data["email"],
+            "password": data["password"],
+            "role": data["role"],
         }
-        
+
         self.users.append(user)
         self.next_id += 1
         self.save_users()
+    
         return {"message": "User added successfully", "user": user}, 201
 
-    def delete_user(self, user_id):
+    def delete_user(self, user_id):        
+        target_user = None
         for user in self.users:
             if user["id"] == user_id:
-                self.users.remove(user)
-                self.save_users()
-                return {"message": f"User with ID {user_id} removed successfully"}, 200
-        return {"error": "User not found"}, 404
+                target_user = user
+                break
+                
+        if target_user is None:
+            return {"error": "User not found"}, 404   
+                
+        # Remove user
+        self.users.remove(user)
+        
+        # Save Changes
+        self.save_users()
+        return {"message": f"User with ID {user_id} removed successfully"}, 200
+            
 
     def edit_user(self, data):
-        if not all(k in data for k in ("id", "username", "role")):
-            return {"error": "ID, username, and role are required"}, 400
-
+        # Check if required data was provided
+        if not data:
+            return {"error": "No data provided"}, 400
+        
+        if "username" not in data:
+            return {"error": "Username is required"}, 400
+        
+        if "email" not in data:
+            return {"error": "Email is required"}, 400
+        
+        if "password" not in data:
+            return {"error": "Password is required"}, 400
+        
+        if "role" not in data:
+            return {"error": "Role is required"}, 400
+        
+        # Find user by ID
+        target_user = None
         for user in self.users:
             if user["id"] == data["id"]:
-                # Check if new username already exists (if username is being changed)
-                if data["username"] != user["username"] and any(
-                    u["username"] == data["username"] for u in self.users
-                ):
-                    return {"error": "Username already exists"}, 400
-
-                user["username"] = data["username"]
-                user["role"] = data["role"]
-                if "password" in data:
-                    user["password"] = data["password"]  # In production, this should be hashed
+                target_user = user
+                break
                 
-                self.save_users()
-                return {"message": f"User with ID {data['id']} updated successfully", "user": user}, 200
-        return {"error": "User not found"}, 404
+        if target_user is None:
+            return {"error": "User not found"}, 404
+            
+        # Update user data
+        # Check if email was changed and if new email already exists
+        new_email = data["email"]
+        if user["email"] != new_email and any(user["email"] == new_email for user in self.users):
+            return {"error": "Email already exists"}, 400
 
+        user["username"] = data["username"]
+        user["email"] = data["email"]
+        user["role"] = data["role"]
+        user["password"] = data["password"] 
+
+        # Save Changes
+        self.save_users()
+        return {
+            "message": f"User with ID {data['id']} updated successfully",
+            "user": user,
+        }, 200
+        
     def login(self, username, password):
         for user in self.users:
             if user["username"] == username and user["password"] == password:
@@ -107,40 +154,57 @@ class UserManager:
                         return user["role"]
         return None
 
+
 class InventoryManager:
     def __init__(self):
-        # Create data directory if it doesn't exist
-        os.makedirs("data", exist_ok=True)
-        self.filepath = "data/inventory.json"
+
+            
         self.inventory = []
         self.next_id = 0
-        self.load_inventory()
-
-    #load inventory function 
-    def load_inventory(self):
-        if os.path.exists(self.filepath):#if json file exists
-            with open(self.filepath, "r") as file:
-                #try to load json file first 
-                try:
-                    data = json.load(file)
-                    self.inventory = data.get("inventory", [])
-                    self.next_id = data.get("next_id", 0)
-                except json.JSONDecodeError:
-                    self.inventory = []
-                    self.next_id = 0
-        else:#create a new one 
+        
+        self.filepath = "data/inventory.json"
+        if not os.path.exists(self.filepath):
             self.save_inventory()
+            
+        self.load_inventory()
+        
+    # load from json file
+    def load_inventory(self):
+        with open(self.filepath, "r") as file:
+            data = json.load(file)
+            self.inventory = data.get("inventory", [])
+            self.next_id = data.get("next_id", 0)
 
-    #save inventory to json file
+    # Save inventory to json file
     def save_inventory(self):
-        with open(self.filepath, "w") as file:#write to file 
-            json.dump({"inventory": self.inventory, "next_id": self.next_id}, file, indent=4) #tab between info 
+        # Create file path if it doesn't exist
+        os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
+        
+        # Write to file
+        with open(self.filepath, "w") as file:
+            json.dump(
+            {"inventory": self.inventory, "next_id": self.next_id}, file, indent=4
+            )
 
-    #add item 
+    # add item
     def add_item(self, data):
-        if not data or not all(k in data for k in ("name", "quantity", "price", "color")):
-            return {"error": "Missing required fields"}, 400
+        # Check if required data was provided
+        if not data:
+            return {"error": "No data provided"}, 400
+        
+        if "name" not in data:
+            return {"error": "Product name is required"}, 400
+        
+        if "quantity" not in data:
+            return {"error": "Quantity is required"}, 400
+        
+        if "price" not in data:
+            return {"error": "Price is required"}, 400
+        
+        if "color" not in data:
+            return {"error": "Color is required"}, 400
 
+        # Create item to inventory
         item = {
             "id": self.next_id,
             "name": data["name"],
@@ -148,21 +212,33 @@ class InventoryManager:
             "price": float(data["price"]),
             "color": data["color"],
         }
+        
+        # Save item to inventory
         self.inventory.append(item)
         self.next_id += 1
-        self.save_inventory()#save inventory to write to file
+        self.save_inventory()
+        
         return {"message": "Item added successfully", "item": item}, 201
 
     def remove_item(self, item_id):
+        target_item = None
         for item in self.inventory:
             if item["id"] == item_id:
-                self.inventory.remove(item)
-                self.save_inventory() #save inventory to edit file
-                return {"message": f"Item with ID {item_id} removed successfully"}, 200
+                target_item = item
+                break
+                
+        self.inventory.remove(item)
+        self.save_inventory()  # save inventory to edit file
+        return {"message": f"Item with ID {item_id} removed successfully"}, 200
         return {"error": "Item not found"}, 404
 
     def edit_item(self, data):
-        if "id" not in data or "quantity" not in data or "price" not in data or "color" not in data:
+        if (
+            "id" not in data
+            or "quantity" not in data
+            or "price" not in data
+            or "color" not in data
+        ):
             return {"error": "ID, quantity, price, and color are required"}, 400
 
         item_id = data["id"]
@@ -177,8 +253,11 @@ class InventoryManager:
                 item["quantity"] = new_quantity
                 item["price"] = new_price
                 item["color"] = new_color
-                self.save_inventory()#save inventory to remove from file
-                return {"message": f"Item with ID {item_id} updated successfully", "item": item}, 200
+                self.save_inventory()  # save inventory to remove from file
+                return {
+                    "message": f"Item with ID {item_id} updated successfully",
+                    "item": item,
+                }, 200
         return {"error": "Item not found"}, 404
 
     def get_inventory(self, amount, skip, filters):
@@ -188,11 +267,12 @@ class InventoryManager:
         return paginated_inventory
 
 
-#flask app class
+# flask app class
 class FlaskApp:
     def __init__(self):
         self.app = Flask(__name__)
         CORS(self.app)
+
         self.inventory_manager = InventoryManager()
         self.user_manager = UserManager()
         self.setup_routes()
@@ -205,7 +285,7 @@ class FlaskApp:
         @self.app.route("/login")
         def login():
             return render_template("login.html")
-        
+
         @self.app.route("/users")
         def users():
             return render_template("users.html")
@@ -241,10 +321,12 @@ class FlaskApp:
 
         @self.app.route("/api/login", methods=["POST"])
         def api_login():
-            data = request.json
-            if not data or "username" not in data or "password" not in data:
+            username = request.args.get("username")
+            password = request.args.get("password")
+            if not username or not password:
                 return jsonify({"error": "Username and password required"}), 400
-            response, status_code = self.user_manager.login(data["username"], data["password"])
+
+            response, status_code = self.user_manager.login(username, password)
             return jsonify(response), status_code
 
         @self.app.route("/api/users", methods=["GET"])
@@ -259,12 +341,14 @@ class FlaskApp:
             response, status_code = self.user_manager.add_user(data)
             return jsonify(response), status_code
 
-        @self.app.route("/api/users/delete", methods=["DELETE"])
-        def delete_user():
+        @self.app.route("/api/users/remove", methods=["DELETE"])
+        def remove_user():
             # Verify admin/manager authorization here
             data = request.json
+            
             if "id" not in data:
                 return jsonify({"error": "ID is required"}), 400
+            
             response, status_code = self.user_manager.delete_user(data["id"])
             return jsonify(response), status_code
 
@@ -277,6 +361,7 @@ class FlaskApp:
 
     def run(self):
         self.app.run(debug=True)
+
 
 if __name__ == "__main__":
     flask_app = FlaskApp()

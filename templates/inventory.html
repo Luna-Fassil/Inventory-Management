@@ -7,12 +7,25 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='main.css') }}"
     />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-light.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-dark.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: dark)"
+    />
+
     <!--changed url to inside static folder-->
     <title>Inventory</title>
   </head>
   <body>
     <script
-      src="{{ url_for('static', filename='inventory.js') }}"
+      src="{{ url_for('static', filename='scripts/inventory.js') }}"
       defer
     ></script>
     <!--changed url to inside static folder-->
@@ -210,7 +223,7 @@
               </select>
             </div>
             <!-- We may want to move this later so it doesn't get clicked accidently -->
-            <button class="close">Cancel</button>
+            <button type="reset" class="close">Cancel</button>
             <button type="submit" class="submit primary">Apply Changes</button>
           </form>
         </div>

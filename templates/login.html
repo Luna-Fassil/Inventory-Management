@@ -5,7 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="../static/main.css" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-light.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-dark.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: dark)"
+    />
   </head>
+
   <body
     style="
       background: var(--accent);
