@@ -98,6 +98,8 @@ async function updateTable() {
               <td>${item.name}</td>
               <td>${item.quantity}</td>
               <td>${item.price}</td>
+              <td>${item.brand}</td>
+              <td>${item.season}</td>
               <td>${item.color}</td>
               <td>
                 <button class="edit-button" onclick="openEditPopup(${item.id})">
@@ -127,6 +129,8 @@ function initializeAddPopup() {
       name: document.querySelector("#product-name").value,
       quantity: parseInt(document.querySelector("#quantity").value),
       price: parseFloat(document.querySelector("#price").value),
+      brand : document.querySelector("#brand").value,
+      season : document.querySelector("#season").value,
       color: document.querySelector("#color").value,
     };
 
@@ -152,6 +156,8 @@ function openEditPopup(id) {
   document.querySelector("#edit-popup #product-name").value = item.name;
   document.querySelector("#edit-popup #quantity").value = item.quantity;
   document.querySelector("#edit-popup #price").value = item.price;
+  document.querySelector("#edit-popup #brand").value = item.brand;
+  document.querySelector("#edit-popup #season").value = item.season;
   document.querySelector("#edit-popup #color").value = item.color;
 
   // Show the edit popup
@@ -180,6 +186,8 @@ function initializeEditPopup() {
       name: document.querySelector("#edit-popup #product-name").value,
       price: parseFloat(document.querySelector("#edit-popup #price").value),
       quantity: parseInt(document.querySelector("#edit-popup #quantity").value),
+      brand : document.querySelector("#brand").value,
+      season : document.querySelector("#season").value,
       color: document.querySelector("#edit-popup #color").value,
     };
 
@@ -214,6 +222,8 @@ function initializeFilters() {
     let inputMaxQuantity =
       parseInt(document.querySelector("input[name='max-quantity']").value) ||
       undefined;
+    let inputBrand = document.querySelector("#filter-brand").value;
+    let inputSeason = document.querySelector("#filter-season").value;
     let inputColor = document.querySelector("#filter-color").value;
 
     filters = {
@@ -222,7 +232,9 @@ function initializeFilters() {
       maxPrice: inputMaxPrice,
       minQuantity: inputMinQuantity,
       maxQuantity: inputMaxQuantity,
-      color: inputColor === "any" ? undefined : inputColor,
+      brand : inputBrand === "any" ? undefined : inputBrand,
+      season : inputSeason=== "any" ? undefined : inputBrand,
+      color: inputColor === "any" ? undefined : inputBrand,
     };
 
     updateTable();

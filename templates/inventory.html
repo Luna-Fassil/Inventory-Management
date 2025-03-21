@@ -93,6 +93,25 @@
           </div>
 
           <div class="inputs">
+            <select id="filter-brand" name="filter-brand" id="">
+              <option value="any">Any</option>
+              <option value="nike">Nike</option>
+              <option value="adidas">Adidas</option>
+              <option value="shein">Shein</option>
+            </select>
+          </div>
+
+          <div class="inputs">
+            <select id="filter-season" name="filter-season" id="">
+              <option value="any">Any</option>
+              <option value="winter">Winter</option>
+              <option value="spring">Spring</option>
+              <option value="summer">Summer</option>
+              <option value="fall">Fall</option>
+            </select>
+          </div>
+
+          <div class="inputs">
             <select id="filter-color" name="filter-color" id="">
               <option value="any">Any</option>
               <option value="red">Red</option>
@@ -126,6 +145,8 @@
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Color</th>
+                <th>Brand</th>
+                <th>Season</th>
                 <th></th>
               </tr>
             </thead>
@@ -161,6 +182,27 @@
               <label for="price">Price</label>
               <input type="number" id="price" placeholder="20" required />
             </div>
+
+            <div class="form-group">
+              <label for="Brand">Brand</label>
+              <select id="brand" required>
+                <option value="nike">Nike</option>
+                <option value="adidas">Adidas</option>
+                <option value="shein">Shein</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="Season">Season</label>
+              <select id="season" required>
+                <option value="winter">Winter</option>
+                <option value="spring">Spring</option>
+                <option value="summer">Summer</option>
+                <option value="fall">Fall</option>
+              </select>
+            </div>
+
+          
 
             <div class="form-group">
               <label for="color">Color</label>
@@ -211,6 +253,26 @@
               >Quantity
               <input type="number" id="quantity" placeholder="1" required />
             </label>
+
+            <div class="form-group">
+              <label for="Brand">Brand</label>
+              <select id="brand" required>
+                <option value="nike">Nike</option>
+                <option value="adidas">Adidas</option>
+                <option value="shein">Shein</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="Season">Season</label>
+              <select id="season" required>
+                <option value="winter">Winter</option>
+                <option value="spring">Spring</option>
+                <option value="summer">Summer</option>
+                <option value="fall">Fall</option>
+              </select>
+            </div>
+
 
             <div class="form-group">
               <label for="color">Color</label>
