@@ -71,6 +71,7 @@ select {
   border: none;
   box-sizing: border-box;
   color: var(--text);
+  width: 100%;
 }
 
 /* Sidebar */
