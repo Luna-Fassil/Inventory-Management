@@ -1,6 +1,7 @@
-let inventory = [];
-let filters = {};
-let editingId = -1;
+// Global variables to store inventory data, filters, and the ID of the item being edited
+let inventory = []; // Stores the list of inventory items
+let filters = {}; // Stores the current filter settings
+let editingId = -1; // Tracks the ID of the item being edited
 
 async function addItem(options) {
   const response = await fetch("http://127.0.0.1:5000/api/inventory/add", {
