@@ -198,8 +198,8 @@ function initializeEditPopup() {
       name: document.querySelector("#edit-popup #product-name").value,
       price: parseFloat(document.querySelector("#edit-popup #price").value),
       quantity: parseInt(document.querySelector("#edit-popup #quantity").value),
-      brand: document.querySelector("#brand").value,
-      season: document.querySelector("#season").value,
+      brand: document.querySelector("#edit-popup #brand").value,
+      season: document.querySelector("#edit-popup #season").value,
       color: document.querySelector("#edit-popup #color").value,
     };
 
