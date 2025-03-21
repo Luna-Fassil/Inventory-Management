@@ -93,7 +93,7 @@ async function updateTable() {
 
   if (response.status === 401) {
     alert("User is not authenticated");
-    window.location.href = '/';
+    window.location.href = "/";
     return;
   }
 
@@ -106,22 +106,22 @@ async function updateTable() {
     //Insert each item into the table
     let row = document.createElement("tr");
     row.innerHTML = `
-              <td>${item.id}</td>
-              <td>${item.name}</td>
-              <td>${item.quantity}</td>
-              <td>${item.price}</td>
-              <td>${item.brand}</td>
-              <td>${item.season}</td>
-              <td>${item.color}</td>
-              <td>
-                <button class="edit-button" onclick="openEditPopup(${item.id})">
-                  <img style="width: 1rem" src="/static/icons/edit.svg"">
-                </button>
-                <button class="delete" onclick="deleteItem(${item.id})">
-                  <img style="width: 1rem" src="./static/icons/trash.svg"">
-                </button>
-              </td>
-            `;
+        <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price}</td>
+          <td>${item.brand.charAt(0).toUpperCase() + item.brand.slice(1)}</td>
+          <td>${item.season.charAt(0).toUpperCase() + item.season.slice(1)}</td>
+          <td>${item.color.charAt(0).toUpperCase() + item.color.slice(1)}</td>
+          <td>
+          <button class="edit-button" onclick="openEditPopup(${item.id})">
+            <img style="width: 1rem" src="/static/icons/edit.svg"">
+          </button>
+          <button class="delete" onclick="deleteItem(${item.id})">
+            <img style="width: 1rem" src="./static/icons/trash.svg"">
+          </button>
+          </td>
+        `;
     table.appendChild(row); //add this row to table
   }
 }
