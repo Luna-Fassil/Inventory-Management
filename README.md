@@ -6,7 +6,6 @@ The HyperLink Inventory Management System is a web-based application designed to
 ## Setup Instructions
 To run the HyperLink Inventory Management System locally, follow these steps:
 
-
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/LunaFassil/HyperLink.git
@@ -21,6 +20,56 @@ To run the HyperLink Inventory Management System locally, follow these steps:
    python inventory.py
 4. **Access the Application**:
 Open your web browser and go to http://127.0.0.1:5000/ to access the inventory management system.
+
+# Inventory Management System - Setup Guide (Windows)
+
+This guide provides step-by-step instructions to set up, build, and run the Inventory Management System on Windows.
+
+---
+
+## Prerequisites
+Before running the system, ensure you have the following installed:
+- Python 3 ([Download Here](https://www.python.org/downloads/))
+- Git ([Download Here](https://git-scm.com/))
+- Command Prompt (`cmd`) for running scripts
+---
+
+## Download the Project
+1. Open Command Prompt (`cmd`).
+2. Navigate to the folder where you want to download the project:
+   ```sh
+   cd C:\Users\YourName\Documents
+3. Clone the repository from GitHub:
+   ```sh
+    git clone https://github.com/LunaFassil/HyperLink.git
+4. Move into the project folder:
+   ```sh
+    cd HyperLink
+---
+
+## Build the Project
+Before running the system, the environment must be set up.
+1. Run The Build Script 
+   ```sh
+    cd build.bat
+ ### What does this do?
+- Cleans up old project files
+- Creates a virtual environment (`venv`)
+- Installs all required dependencies (Flask, Flask-CORS, etc.)
+- Once you see **"Build Complete!"**, the application is ready to run.
+---
+
+## Run the Application
+After the build is complete, start the Flask server.
+1. Run The Application Using 
+   ```sh
+    run.bat
+---
+
+## Access the Application
+1. Once the server is running, open a browser and go to:
+   ```sh
+    http://127.0.0.1:5000/
 
 ## Features Implemented in Iteration 1
 - **Add Clothing Items**: Users can add new clothing items to the inventory by specifying details such as name, color, quantity, and price.
