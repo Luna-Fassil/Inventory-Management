@@ -3,12 +3,15 @@ let filters = {};
 let editingId = -1;
 
 async function addItem(options) {
-  const response = await fetch("http://127.0.0.1:5000/add", {
+  const response = await fetch("http://127.0.0.1:5000/api/inventory/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ token: localStorage.getItem("sessionToken"),...options }),
+    body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
+      ...options,
+    }),
   });
 
   console.log(await response);
@@ -25,12 +28,15 @@ async function addItem(options) {
 }
 
 async function deleteItem(id) {
-  let response = await fetch("http://127.0.0.1:5000/remove", {
+  let response = await fetch("http://127.0.0.1:5000/api/inventory/remove", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ token: localStorage.getItem("sessionToken"), id: id }),
+    body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
+      id: id,
+    }),
   });
 
   let data = await response.json();
@@ -44,7 +50,7 @@ async function deleteItem(id) {
 }
 
 async function modifyItem(id, options = {}) {
-  let response = await fetch("http://127.0.0.1:5000/edit", {
+  let response = await fetch("http://127.0.0.1:5000/api/inventory/edit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +65,7 @@ async function modifyItem(id, options = {}) {
   let data = await response.json();
 
   if (!response.ok || data.error) {
-    alert(`Error: Failed to add item ${data.error}`);
+    alert(`Error: Failed to edit item ${data.error}`);
     return false;
   }
 
@@ -68,11 +74,11 @@ async function modifyItem(id, options = {}) {
 
 async function updateTable() {
   // Convert filters object to JSON string
-  const amount = 10;
+  const amount = 100;
   const skip = 0;
 
   // Fetch inventory from Flask with filters
-  const response = await fetch("/inventory", {
+  const response = await fetch("/api/inventory", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -81,9 +87,15 @@ async function updateTable() {
       token: localStorage.getItem("sessionToken"),
       filters: filters,
       amount: amount,
-      skip: skip
-    })
+      skip: skip,
+    }),
   });
+
+  if (response.status === 401) {
+    alert("User is not authenticated");
+    window.location.href = '/';
+    return;
+  }
 
   const data = await response.json();
   inventory = data;
@@ -129,8 +141,8 @@ function initializeAddPopup() {
       name: document.querySelector("#product-name").value,
       quantity: parseInt(document.querySelector("#quantity").value),
       price: parseFloat(document.querySelector("#price").value),
-      brand : document.querySelector("#brand").value,
-      season : document.querySelector("#season").value,
+      brand: document.querySelector("#brand").value,
+      season: document.querySelector("#season").value,
       color: document.querySelector("#color").value,
     };
 
@@ -186,8 +198,8 @@ function initializeEditPopup() {
       name: document.querySelector("#edit-popup #product-name").value,
       price: parseFloat(document.querySelector("#edit-popup #price").value),
       quantity: parseInt(document.querySelector("#edit-popup #quantity").value),
-      brand : document.querySelector("#brand").value,
-      season : document.querySelector("#season").value,
+      brand: document.querySelector("#brand").value,
+      season: document.querySelector("#season").value,
       color: document.querySelector("#edit-popup #color").value,
     };
 
@@ -232,8 +244,8 @@ function initializeFilters() {
       maxPrice: inputMaxPrice,
       minQuantity: inputMinQuantity,
       maxQuantity: inputMaxQuantity,
-      brand : inputBrand === "any" ? undefined : inputBrand,
-      season : inputSeason=== "any" ? undefined : inputSeason,
+      brand: inputBrand === "any" ? undefined : inputBrand,
+      season: inputSeason === "any" ? undefined : inputSeason,
       color: inputColor === "any" ? undefined : inputColor,
     };
 

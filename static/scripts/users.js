@@ -70,9 +70,24 @@ async function modifyUser(id, options = {}) {
 }
 
 async function updateTable() {
-  const response = await fetch(`api/users`);
+  const response = await fetch("/api/users", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: localStorage.getItem("sessionToken"),
+    }),
+  });
+
+  if (response.status === 401) {
+    alert("User is not authenticated");
+    window.location.href = "/";
+    return;
+  }
 
   const data = await response.json();
+  console.log(data);
   users = data;
 
   let table = document.querySelector("table > tbody");

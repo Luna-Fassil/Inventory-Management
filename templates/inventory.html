@@ -30,7 +30,7 @@
     ></script>
     <!--changed url to inside static folder-->
     <nav id="sidebar" class="panel">
-      <a class="sidebar-item active" href="/">
+      <a class="sidebar-item active" href="/inventory">
         <img
           class="sidebar-icon"
           src="{{ url_for('static', filename='icons/inventory.svg') }}"
@@ -89,9 +89,8 @@
 
         <div class="filter-item option">
           <div class="header">
-            <label for="color">Color</label>
+            <label for="brand">Brand</label>
           </div>
-
           <div class="inputs">
             <select id="filter-brand" name="filter-brand" id="">
               <option value="any">Any</option>
@@ -100,7 +99,11 @@
               <option value="shein">Shein</option>
             </select>
           </div>
-
+        </div>
+        <div class="filter-item option">
+          <div class="header">
+            <label for="brand">Season</label>
+          </div>
           <div class="inputs">
             <select id="filter-season" name="filter-season" id="">
               <option value="any">Any</option>
@@ -110,7 +113,11 @@
               <option value="fall">Fall</option>
             </select>
           </div>
-
+        </div>
+        <div class="filter-item option">
+          <div class="header">
+            <label for="color">Color</label>
+          </div>
           <div class="inputs">
             <select id="filter-color" name="filter-color" id="">
               <option value="any">Any</option>
@@ -144,9 +151,9 @@
                 <th>Product Name</th>
                 <th>Quantity</th>
                 <th>Price</th>
-                <th>Color</th>
                 <th>Brand</th>
                 <th>Season</th>
+                <th>Color</th>
                 <th></th>
               </tr>
             </thead>
