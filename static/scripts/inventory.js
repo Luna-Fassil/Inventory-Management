@@ -233,8 +233,8 @@ function initializeFilters() {
       minQuantity: inputMinQuantity,
       maxQuantity: inputMaxQuantity,
       brand : inputBrand === "any" ? undefined : inputBrand,
-      season : inputSeason=== "any" ? undefined : inputBrand,
-      color: inputColor === "any" ? undefined : inputBrand,
+      season : inputSeason=== "any" ? undefined : inputSeason,
+      color: inputColor === "any" ? undefined : inputColor,
     };
 
     updateTable();

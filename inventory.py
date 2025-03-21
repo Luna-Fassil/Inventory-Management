@@ -278,10 +278,32 @@ class InventoryManager:
 
     def get_inventory(self, amount, skip, filters):
         filtered_inventory = self.inventory.copy()
+
+        #search filter
+        if "search" in filters and filters["search"]:
+            filtered_inventory = self.search_item(filters["search"])
+
         # TODO: Apply filters
         paginated_inventory = filtered_inventory[skip : skip + amount]
         return paginated_inventory
-
+    
+    
+    #COMMENT OUT TO FAIL TDD TEST
+    #search inventory by name (case-insensitive, allows partial match)
+    def search_item(self, query):
+        #search by name (partial, case-insensitive) or ID (exact match)
+        query = query.strip().lower()
+        #hold results in array
+        results = []
+        for item in self.inventory:
+            #match by ID if query is a digit
+            if query.isdigit() and int(query) == item["id"]:
+                results.append(item)
+                continue
+            #match by partial name
+            if query in item["name"].lower():
+                results.append(item)
+        return results
 
 # flask app class
 class FlaskApp:
@@ -306,12 +328,17 @@ class FlaskApp:
         def users():
             return render_template("users.html")
 
-        @self.app.route("/inventory", methods=["GET"])
+        @self.app.route("/inventory", methods=["GET", "POST"])
         def get_inventory():
-            amount = request.args.get("amount", default=100, type=int)
-            skip = request.args.get("skip", default=0, type=int)
-            filters = request.args.get("filters", "{}")
-            filters = json.loads(filters)
+            if request.method == "POST":
+                data = request.json or {}
+                amount = data.get("amount", 100)
+                skip = data.get("skip", 0)
+                filters = data.get("filters", {})
+            else:
+                amount = request.args.get("amount", default=100, type=int)
+                skip = request.args.get("skip", default=0, type=int)
+                filters = json.loads(request.args.get("filters", "{}"))
             inventory = self.inventory_manager.get_inventory(amount, skip, filters)
             return jsonify(inventory)
 
