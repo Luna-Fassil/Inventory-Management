@@ -463,7 +463,7 @@ class FlaskApp:
             if "token" not in data:
                 return jsonify({"error": "Token is required"}), 400
             
-            if not authorization(data["token"], ["guest", "employee", "admin", "manager"]):
+            if not authorization(data["token"], ["admin", "manager"]):
                 return jsonify({"error": "Unauthorized"}), 401
             
             # Handle response

@@ -81,7 +81,7 @@ async function updateTable() {
   });
 
   if (response.status === 401) {
-    alert("User is not authenticated");
+    alert("User is not Authenticated / Authorized");
     window.location.href = "/";
     return;
   }
