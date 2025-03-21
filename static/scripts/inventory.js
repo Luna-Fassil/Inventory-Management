@@ -3,50 +3,58 @@ let inventory = []; // Stores the list of inventory items
 let filters = {}; // Stores the current filter settings
 let editingId = -1; // Tracks the ID of the item being edited
 
+// Function to add a new item to the inventory
 async function addItem(options) {
+  // Send a POST request to the server to add a new item
   const response = await fetch("http://127.0.0.1:5000/api/inventory/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      token: localStorage.getItem("sessionToken"),
-      ...options,
+      token: localStorage.getItem("sessionToken"), // Include the session token for authentication
+      ...options, // Include the item details
     }),
   });
 
-  console.log(await response);
+  console.log(await response); // Log the response for debugging
 
-  const data = await response.json();
+  const data = await response.json(); // Parse the JSON response
 
+   // Handle errors if the request fails
   if (!response.ok || data.error) {
     alert(`Error: Failed to add item ${data.error}`);
     return false;
   }
 
+  // Update the table to reflect the new item
   await updateTable();
   return true;
 }
 
+// Function to delete an item from the inventory
 async function deleteItem(id) {
+// Send a DELETE request to the server to remove the item
   let response = await fetch("http://127.0.0.1:5000/api/inventory/remove", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      token: localStorage.getItem("sessionToken"),
-      id: id,
+      token: localStorage.getItem("sessionToken"), // Include the session token
+      id: id, // Include the ID of the item to delete
     }),
   });
 
-  let data = await response.json();
+  let data = await response.json(); // Parse the JSON response
 
+  // Handle errors if the request fails
   if (!response.ok || data.error) {
     alert(`Error: Failed to delete item ${data.error}`);
     return false;
   }
 
+  // Update the table to reflect the deletion
   await updateTable();
 }
 
