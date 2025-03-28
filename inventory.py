@@ -189,7 +189,7 @@ class UserManager:
             return {"error": "Invalid credentials"}, 401
             
         # generate a session for the user
-        session_token = f"{user["id"]}-{random.randint(0, 9999999999999999)}"
+        session_token = f"{user['id']}-{random.randint(0, 9999999999999999)}"
         self.sessions.append({"token": session_token, "user_id": found_user["id"]})
         return {"token": session_token, "role": found_user["role"]}, 200
         
@@ -307,7 +307,7 @@ class InventoryManager:
         self.save_inventory()
         
         return {
-            "message": f"Item with ID {data["id"]} updated successfully",
+            "message": f"Item with ID {data['id']} updated successfully",
             "item": item,
         }, 200
 
