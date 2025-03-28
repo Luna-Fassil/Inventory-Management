@@ -189,7 +189,7 @@ class UserManager:
             return {"error": "Invalid credentials"}, 401
             
         # generate a session for the user
-        session_token = f"{user['id']}-{random.randint(0, 9999999999999999)}"
+        session_token = f"{user['id']}-{random.randint(0, 99999)}-{random.randint(0, 99999)}-{random.randint(0, 99999)}"
         self.sessions.append({"token": session_token, "user_id": found_user["id"]})
         return {"token": session_token, "role": found_user["role"]}, 200
         
