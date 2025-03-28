@@ -6,6 +6,7 @@ import random
 
 
 # Users may be either a guest, employee, manager, or admin
+# Unauthorized: can't access any data
 # guest: can view inventory
 # employee: can view inventory, edit items
 # manager: can view inventory, edit items, add items, remove items, add employee users, remove employee users, edit users
