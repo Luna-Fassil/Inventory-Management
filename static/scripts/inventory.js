@@ -2,6 +2,7 @@
 let inventory = []; // Stores the list of inventory items
 let filters = {}; // Stores the current filter settings
 let editingId = -1; // Tracks the ID of the item being edited
+let userRole = "";
 
 // Function to add a new item to the inventory
 async function addItem(options) {
@@ -21,7 +22,7 @@ async function addItem(options) {
 
   const data = await response.json(); // Parse the JSON response
 
-   // Handle errors if the request fails
+  // Handle errors if the request fails
   if (!response.ok || data.error) {
     alert(`Error: Failed to add item ${data.error}`);
     return false;
@@ -34,7 +35,7 @@ async function addItem(options) {
 
 // Function to delete an item from the inventory
 async function deleteItem(id) {
-// Send a DELETE request to the server to remove the item
+  // Send a DELETE request to the server to remove the item
   let response = await fetch("http://127.0.0.1:5000/api/inventory/remove", {
     method: "DELETE",
     headers: {
@@ -81,6 +82,12 @@ async function modifyItem(id, options = {}) {
   await updateTable();
 }
 
+// Users may be either a guest, employee, manager, or admin
+// Unauthorized: can't access any data
+// guest: can view inventory
+// employee: can view inventory, edit items
+// manager: can view inventory, edit items, add items, remove items, add employee users, remove employee users, edit users
+// admin: can view inventory, edit items, add items, remove items and users, edit users, add managers, remove managers, edit managers
 async function updateTable() {
   // Convert filters object to JSON string
   const amount = 100;
@@ -123,12 +130,24 @@ async function updateTable() {
           <td>${item.season.charAt(0).toUpperCase() + item.season.slice(1)}</td>
           <td>${item.color.charAt(0).toUpperCase() + item.color.slice(1)}</td>
           <td>
-          <button class="edit-button" onclick="openEditPopup(${item.id})">
-            <img style="width: 1rem" src="/static/icons/edit.svg"">
-          </button>
-          <button class="delete" onclick="deleteItem(${item.id})">
-            <img style="width: 1rem" src="./static/icons/trash.svg"">
-          </button>
+            ${
+              userRole === "employee" ||
+              userRole === "manager" ||
+              userRole === "admin"
+                ? `<button class="edit-button" onclick="openEditPopup(${item.id})">
+                      <img style="width: 1rem" src="/static/icons/edit.svg">
+                    </button>`
+                : ""
+            }
+            ${
+              userRole === "manager" || userRole === "admin"
+                ? `<button class="delete" onclick="deleteItem(${item.id})">
+                    <img style="width: 1rem" src="./static/icons/trash.svg"">
+                  </button>`
+                : ""
+            }
+
+  
           </td>
         `;
     table.appendChild(row); //add this row to table
@@ -262,11 +281,21 @@ function initializeFilters() {
   });
 }
 
+function removeUnauthorizedElements() {
+  userRole = localStorage.getItem("userRole");
+
+  if (!(userRole === "admin" || userRole === "manager")) {
+    document.querySelector("#add-item-button").remove();
+    document.querySelector("#users-tab").remove();
+  }
+}
+
 window.onload = async () => {
   console.log(localStorage.getItem("sessionToken"));
   initializeAddPopup();
   initializeEditPopup();
   initializeFilters();
+  removeUnauthorizedElements();
 
   await updateTable();
 };

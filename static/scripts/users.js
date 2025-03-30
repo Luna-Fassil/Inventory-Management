@@ -1,5 +1,6 @@
 let users = [];
 let editingUserId = -1;
+let userRole = "";
 
 async function addUser(options) {
   const response = await fetch("http://127.0.0.1:5000/api/users/add", {
@@ -182,8 +183,18 @@ function initializeEditPopup() {
   });
 }
 
+function removeUnauthorizedElements() {
+  userRole = localStorage.getItem("userRole");
+
+  if (!(userRole === "admin" || userRole === "manager")) {
+    document.querySelector("#add-user-button").remove();
+  }
+}
+
 window.onload = async () => {
   initializeAddPopup();
   initializeEditPopup();
+  removeUnauthorizedElements();
+
   await updateTable();
 };

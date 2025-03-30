@@ -37,7 +37,7 @@
           alt="inventory-icon"
         />
       </a>
-      <a class="sidebar-item" href="./users">
+      <a class="sidebar-item" id="users-tab" href="./users">
         <img
           class="sidebar-icon"
           src="{{ url_for('static', filename='icons/people.svg') }}"
@@ -209,8 +209,6 @@
               </select>
             </div>
 
-          
-
             <div class="form-group">
               <label for="color">Color</label>
               <select id="color" required>
@@ -279,7 +277,6 @@
                 <option value="fall">Fall</option>
               </select>
             </div>
-
 
             <div class="form-group">
               <label for="color">Color</label>
