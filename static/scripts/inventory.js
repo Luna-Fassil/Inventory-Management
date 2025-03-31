@@ -3,6 +3,7 @@ let inventory = []; // Stores the list of inventory items
 let filters = {}; // Stores the current filter settings
 let editingId = -1; // Tracks the ID of the item being edited
 let userRole = "";
+let lastHeader = "";
 
 // Function to add a new item to the inventory
 async function addItem(options) {
@@ -247,8 +248,16 @@ function initializeFilters() {
   const headers = document.querySelectorAll("th");
   for (let header of headers) {
     header.addEventListener("click", () => {
-      console.log(header.id);
       filters.sort = header.id;
+      if (header.id === lastHeader && filters.reverse !== undefined) {
+        filters.reverse = !filters.reverse;
+      } else {
+        filters.reverse = false;
+      }
+
+      console.log(filters.reverse);
+      lastHeader = header.id;
+
       updateTable();
     });
   }
@@ -302,10 +311,9 @@ function removeUnauthorizedElements() {
 }
 
 window.onload = async () => {
-  console.log(localStorage.getItem("sessionToken"));
+  initializeFilters();
   initializeAddPopup();
   initializeEditPopup();
-  initializeFilters();
   removeUnauthorizedElements();
 
   await updateTable();

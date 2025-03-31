@@ -322,10 +322,13 @@ class InventoryManager:
         # TODO: Apply filters
         
         # Sort by specified column
-        if filters["sort"] in ["name", "quantity", "price", "color", "brand", "season"]:
-            filtered_inventory.sort(key=lambda x: x[filters["sort"]])
-        else:
-            filtered_inventory.sort(key=lambda x: x["id"])
+        sort_column = "id"
+        if "sort" in filters and filters["sort"] in ["id", "name", "quantity", "price", "color", "brand", "season"]:
+            sort_column = filters["sort"]
+        
+        reverse = filters.get("reverse", False)
+        filtered_inventory.sort(key=lambda x: x[sort_column], reverse=reverse)
+
         
         paginated_inventory = filtered_inventory[skip : skip + amount]
         return paginated_inventory
