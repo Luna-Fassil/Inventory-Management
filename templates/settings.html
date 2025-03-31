@@ -22,6 +22,10 @@
     />
   </head>
   <body>
+    <script
+      src="{{ url_for('static', filename='scripts/settings.js') }}"
+      defer
+    ></script>
     <nav id="sidebar" class="panel">
       <a class="sidebar-item active" href="/inventory">
         <img
@@ -38,7 +42,7 @@
         />
       </a>
       <div class="sidebar-spacer"></div>
-      <a class="sidebar-item" href="./settings.html">
+      <a class="sidebar-item" href="./settings">
         <img
           class="sidebar-icon"
           src="{{ url_for('static', filename='icons/settings.svg') }}"
@@ -46,8 +50,6 @@
         />
       </a>
     </nav>
-    <main class="panel">
-        TODO
-    </main>
+    <main class="panel">TODO</main>
   </body>
 </html>

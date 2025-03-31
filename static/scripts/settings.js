@@ -1,3 +1,13 @@
+function removeUnauthorizedElements() {
+  userRole = localStorage.getItem("userRole");
+
+  if (!(userRole === "admin" || userRole === "manager")) {
+    document.querySelector("#users-tab").remove();
+  }
+}
+
 window.onload = () => {
-    console.log("Settings")
+  removeUnauthorizedElements();
+
+  console.log("Settings");
 };

@@ -243,6 +243,16 @@ function initializeEditPopup() {
 }
 
 function initializeFilters() {
+  // Sort Buttons
+  const headers = document.querySelectorAll("th");
+  for (let header of headers) {
+    header.addEventListener("click", () => {
+      console.log(header.id);
+      filters.sort = header.id;
+      updateTable();
+    });
+  }
+
   const filtersForm = document.querySelector("#filters-form");
 
   // Submit Behaviour
@@ -275,6 +285,7 @@ function initializeFilters() {
       brand: inputBrand === "any" ? undefined : inputBrand,
       season: inputSeason === "any" ? undefined : inputSeason,
       color: inputColor === "any" ? undefined : inputColor,
+      sort: "id",
     };
 
     updateTable();

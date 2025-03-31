@@ -312,7 +312,7 @@ class InventoryManager:
             "item": item,
         }, 200
 
-    def get_inventory(self, amount, skip, sort, filters):
+    def get_inventory(self, amount, skip, filters):
         filtered_inventory = self.inventory.copy()
 
         # search filter
@@ -321,6 +321,11 @@ class InventoryManager:
 
         # TODO: Apply filters
         
+        # Sort by specified column
+        if filters["sort"] in ["name", "quantity", "price", "color", "brand", "season"]:
+            filtered_inventory.sort(key=lambda x: x[filters["sort"]])
+        else:
+            filtered_inventory.sort(key=lambda x: x["id"])
         
         paginated_inventory = filtered_inventory[skip : skip + amount]
         return paginated_inventory
@@ -389,11 +394,10 @@ class FlaskApp:
             
             amount = data.get("amount", 100)
             skip = data.get("skip", 0)
-            sort = data.get("sort", "id")
             filters = data.get("filters", {})
             
             # Handle response
-            inventory = self.inventory_manager.get_inventory(amount, skip, sort, filters)
+            inventory = self.inventory_manager.get_inventory(amount, skip, filters)
             return jsonify(inventory)
 
         @self.app.route("/api/inventory/add", methods=["POST"])
