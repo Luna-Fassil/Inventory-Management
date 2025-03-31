@@ -1,11 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings</title>
-</head>
-<body>
-    TODO
-</body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='main.css') }}"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-light.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon-dark.ico') }}"
+      type="image/x-icon"
+      media="(prefers-color-scheme: dark)"
+    />
+  </head>
+  <body>
+    <nav id="sidebar" class="panel">
+      <a class="sidebar-item active" href="/inventory">
+        <img
+          class="sidebar-icon"
+          src="{{ url_for('static', filename='icons/inventory.svg') }}"
+          alt="inventory-icon"
+        />
+      </a>
+      <a class="sidebar-item" id="users-tab" href="./users">
+        <img
+          class="sidebar-icon"
+          src="{{ url_for('static', filename='icons/people.svg') }}"
+          alt="activity-icon"
+        />
+      </a>
+      <div class="sidebar-spacer"></div>
+      <a class="sidebar-item" href="./settings.html">
+        <img
+          class="sidebar-icon"
+          src="{{ url_for('static', filename='icons/settings.svg') }}"
+          alt="settings-icon"
+        />
+      </a>
+    </nav>
+    <main class="panel">
+        TODO
+    </main>
+  </body>
 </html>

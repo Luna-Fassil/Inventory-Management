@@ -9,7 +9,7 @@ import random
 # Unauthorized: can't access any data
 # guest: can view inventory
 # employee: can view inventory, edit items
-# manager: can view inventory, edit items, add items, remove items, add employee users, remove employee users, edit users
+# manager: can view inventory, edit items, add items, remove items, add employee users, remove employee users
 # admin: can view inventory, edit items, add items, remove items and users, edit users, add managers, remove managers, edit managers
 class UserManager:
     def __init__(self):
@@ -321,6 +321,7 @@ class InventoryManager:
 
         # TODO: Apply filters
         
+        
         paginated_inventory = filtered_inventory[skip : skip + amount]
         return paginated_inventory
 
@@ -508,7 +509,7 @@ class FlaskApp:
             if "token" not in data:
                 return jsonify({"error": "Token is required"}), 400
             
-            if not authorization(data["token"], ["admin", "manager"]):
+            if not authorization(data["token"], ["admin"]):
                 return jsonify({"error": "Unauthorized"}), 401
             
             # Handle response

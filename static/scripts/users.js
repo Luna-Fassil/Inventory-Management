@@ -102,13 +102,18 @@ async function updateTable() {
             <td>${user.password}</td>
             <td>${user.role}</td>
             <td>
-                <button class="edit-button" onclick="openEditPopup(${user.id})">
-                    <img style="width: 1rem" src="/static/icons/edit.svg">
-                </button>
-                <button class="delete" onclick="deleteUser(${user.id})">
-                    <img style="width: 1rem" src="./static/icons/trash.svg">
-                </button>
-            </td>
+              <button class="delete" onclick="deleteUser(${user.id})">
+                  <img style="width: 1rem" src="./static/icons/trash.svg">
+              </button>
+
+              ${
+                userRole !== "manager"
+                  ? `<button class="edit-button" onclick="openEditPopup(${user.id})">
+                      <img style="width: 1rem" src="/static/icons/edit.svg">
+                    </button>`
+                  : ""
+              }
+              </td >
         `;
     table.appendChild(row);
   }
