@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
+from flask import Response
 import json
 import os
 import random
+import io #for download as csv
+import csv #for download as csv
+
 
 
 # Users may be either a guest, employee, manager, or admin
@@ -447,6 +451,28 @@ class FlaskApp:
             # Handle response
             response, status_code = self.inventory_manager.edit_item(data)
             return jsonify(response), status_code
+        
+        # method to export inventory as csv 
+        @self.app.route("/api/inventory/export", methods=["GET"])
+        def export_inventory():
+            token = request.args.get("token") #simulate user token check
+            if not token or not self.user_manager.verify_session(token):
+                return jsonify({"error": "Unauthorized"}), 401
+
+            #create CSV output
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=["id", "name", "quantity", "price", "color", "brand", "season"])
+            writer.writeheader()
+            for item in self.inventory_manager.inventory:
+                writer.writerow(item)
+
+            #return CSV as download
+            output.seek(0)
+            return Response(
+                output,
+                mimetype="text/csv",
+                headers={"Content-Disposition": "attachment;filename=inventory.csv"}
+            )
 
 
         #############
@@ -528,6 +554,8 @@ class FlaskApp:
             if user_role not in roles:
                 return False
             return True
+
+
         
     def run(self):
         self.app.run(debug=True)

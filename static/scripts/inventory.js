@@ -318,3 +318,15 @@ window.onload = async () => {
 
   await updateTable();
 };
+
+//download as csv function
+function downloadCSV() {
+  const token = localStorage.getItem("sessionToken");
+  if (!token) {
+    alert("User is not authenticated");
+    return;
+  }
+
+  const downloadUrl = `/api/inventory/export?token=${token}`;
+  window.location.href = downloadUrl;
+}
