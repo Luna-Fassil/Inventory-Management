@@ -248,6 +248,19 @@ class InventoryManager:
         for field in required_fields:
             if field not in data:
                 return {"error": f"{field.capitalize()} is required"}, 400
+            
+        #add error handling , no non numeric or negative answers
+        try:
+            quantity = int(data["quantity"])
+            price = float(data["price"])
+        except ValueError:
+            return {"error": "Price must be a number, quantity must be an integer"}, 400
+
+        if quantity < 0:
+            return {"error": "Quantity must be non-negative"}, 400
+
+        if price < 0:
+            return {"error": "Price must be non-negative"}, 400
 
         # Create item to inventory
         item = {
