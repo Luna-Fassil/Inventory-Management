@@ -322,10 +322,7 @@ function downloadCSV() {
   window.location.href = downloadUrl;
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a1d713f61e0fe906ddbfd9c948e47dcadd091e5a
+//loads the functions
 window.onload = async () => {
   initializeFilters();
   initializeAddPopup();
