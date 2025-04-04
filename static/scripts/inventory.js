@@ -126,7 +126,7 @@ async function updateTable() {
         <td>${item.id}</td>
           <td>${item.name}</td>
           <td>${item.quantity}</td>
-          <td>${item.price}</td>
+          <td>$${item.price.toFixed(2)}</td>
           <td>${item.brand.charAt(0).toUpperCase() + item.brand.slice(1)}</td>
           <td>${item.season.charAt(0).toUpperCase() + item.season.slice(1)}</td>
           <td>${item.color.charAt(0).toUpperCase() + item.color.slice(1)}</td>
@@ -168,11 +168,11 @@ function initializeAddPopup() {
 
     const newItem = {
       name: document.querySelector("#product-name").value,
-      quantity: parseInt(document.querySelector("#quantity").value),
-      price: parseFloat(document.querySelector("#price").value),
-      brand: document.querySelector("#brand").value,
-      season: document.querySelector("#season").value,
-      color: document.querySelector("#color").value,
+      quantity: parseInt(document.querySelector("#add-quantity").value),
+      price: parseFloat(document.querySelector("#add-price").value),
+      brand: document.querySelector("#add-brand").value,
+      season: document.querySelector("#add-season").value,
+      color: document.querySelector("#add-color").value,
     };
 
     addItem(newItem);
@@ -195,11 +195,11 @@ function openEditPopup(id) {
 
   // Populate the form with the item's current data
   document.querySelector("#edit-popup #product-name").value = item.name;
-  document.querySelector("#edit-popup #quantity").value = item.quantity;
-  document.querySelector("#edit-popup #price").value = item.price;
-  document.querySelector("#edit-popup #brand").value = item.brand;
-  document.querySelector("#edit-popup #season").value = item.season;
-  document.querySelector("#edit-popup #color").value = item.color;
+  document.querySelector("#edit-popup #edit-quantity").value = item.quantity;
+  document.querySelector("#edit-popup #edit-price").value = item.price;
+  document.querySelector("#edit-popup #edit-brand").value = item.brand;
+  document.querySelector("#edit-popup #edit-season").value = item.season;
+  document.querySelector("#edit-popup #edit-color").value = item.color;
 
   // Show the edit popup
   edit_popup.style.visibility = "visible";
@@ -225,11 +225,11 @@ function initializeEditPopup() {
     // Collect the updated data from the form
     const options = {
       name: document.querySelector("#edit-popup #product-name").value,
-      price: parseFloat(document.querySelector("#edit-popup #price").value),
-      quantity: parseInt(document.querySelector("#edit-popup #quantity").value),
-      brand: document.querySelector("#edit-popup #brand").value,
-      season: document.querySelector("#edit-popup #season").value,
-      color: document.querySelector("#edit-popup #color").value,
+      price: parseFloat(document.querySelector("#edit-popup #edit-price").value),
+      quantity: parseInt(document.querySelector("#edit-popup #edit-quantity").value),
+      brand: document.querySelector("#edit-popup #edit-brand").value,
+      season: document.querySelector("#edit-popup #edit-season").value,
+      color: document.querySelector("#edit-popup #edit-color").value,
     };
 
     console.log("Editing Item ID:", editingId); // Debugging: Log the item ID
