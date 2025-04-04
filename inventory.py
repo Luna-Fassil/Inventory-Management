@@ -339,16 +339,46 @@ class InventoryManager:
         # TODO: Apply filters
         
         # Sort by specified column
+        
+    # Apply filters
+        min_price = filters.get("min_price")
+        max_price = filters.get("max_price")
+        min_quantity = filters.get("min_quantity")
+        max_quantity = filters.get("max_quantity")
+        brand = filters.get("brand")
+        season = filters.get("season")
+        color = filters.get("color")
+
+        def matches_filters(item):
+            if min_price is not None and item["price"] < min_price:
+                return False
+            if max_price is not None and item["price"] > max_price:
+                return False
+            if min_quantity is not None and item["quantity"] < min_quantity:
+                return False
+            if max_quantity is not None and item["quantity"] > max_quantity:
+                return False
+            if brand and item["brand"].lower() != brand.lower():
+                return False
+            if season and item["season"].lower() != season.lower():
+                return False
+            if color and item["color"].lower() != color.lower():
+                return False
+            return True
+
+        filtered_inventory = [item for item in filtered_inventory if matches_filters(item)]
+
+        # Sort by specified column
         sort_column = "id"
         if "sort" in filters and filters["sort"] in ["id", "name", "quantity", "price", "color", "brand", "season"]:
             sort_column = filters["sort"]
-        
+
         reverse = filters.get("reverse", False)
         filtered_inventory.sort(key=lambda x: x[sort_column], reverse=reverse)
 
-        
-        paginated_inventory = filtered_inventory[skip : skip + amount]
+        paginated_inventory = filtered_inventory[skip: skip + amount]
         return paginated_inventory
+
 
     # COMMENT OUT TO FAIL TDD TEST
     # search inventory by name (case-insensitive, allows partial match)

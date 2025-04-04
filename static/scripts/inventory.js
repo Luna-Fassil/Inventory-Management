@@ -300,6 +300,71 @@ function initializeFilters() {
     updateTable();
   });
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const filtersForm = document.getElementById("filters-form");
+  const tbody = document.querySelector("tbody");
+
+  // Sample data — Replace this with your real data from a server or backend
+  /*
+  let inventory = [
+    
+    { id: 4, name: "Shirt", quantity: 10, price: 250, brand: "nike", season: "winter", color: "red" },
+    { id: 5, name: "Pants", quantity: 25, price: 1650, brand: "adidas", season: "fall", color: "blue" },
+    { id: 6, name: "Sock", quantity: 15, price: 50, brand: "shein", season: "summer", color: "blue" },
+  ];
+  */
+
+  function renderTable(data) {
+    tbody.innerHTML = "";
+    data.forEach(item => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.id}</td>
+        <td>${item.name}</td>
+        <td>${item.quantity}</td>
+        <td>$${item.price.toFixed(2)}</td>
+        <td>${item.brand}</td>
+        <td>${item.season}</td>
+        <td>${item.color}</td>
+        <td></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+
+  filtersForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const search = document.getElementById("search").value.toLowerCase();
+    const minPrice = parseFloat(filtersForm["min-price"].value) || 0;
+    const maxPrice = parseFloat(filtersForm["max-price"].value) || Infinity;
+    const minQty = parseFloat(filtersForm["min-quantity"].value) || 0;
+    const maxQty = parseFloat(filtersForm["max-quantity"].value) || Infinity;
+    const brand = filtersForm["filter-brand"].value;
+    const season = filtersForm["filter-season"].value;
+    const color = filtersForm["filter-color"].value;
+
+    const filtered = inventory.filter(item => {
+      return (
+        item.name.toLowerCase().includes(search) &&
+        item.price >= minPrice &&
+        item.price <= maxPrice &&
+        item.quantity >= minQty &&
+        item.quantity <= maxQty &&
+        (brand === "any" || item.brand === brand) &&
+        (season === "any" || item.season === season) &&
+        (color === "any" || item.color === color)
+      );
+    });
+
+    renderTable(filtered);
+  });
+
+  // Initial table render
+  renderTable(inventory);
+});
+
 
 function removeUnauthorizedElements() {
   userRole = localStorage.getItem("userRole");
