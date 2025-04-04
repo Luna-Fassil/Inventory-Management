@@ -194,7 +194,7 @@ function openEditPopup(id) {
   let item = inventory.find((item) => item.id == id);
 
   // Populate the form with the item's current data
-  document.querySelector("#edit-popup #product-name").value = item.name;
+  document.querySelector("#edit-popup #edit-name").value = item.name;
   document.querySelector("#edit-popup #edit-quantity").value = item.quantity;
   document.querySelector("#edit-popup #edit-price").value = item.price;
   document.querySelector("#edit-popup #edit-brand").value = item.brand;
@@ -224,7 +224,7 @@ function initializeEditPopup() {
 
     // Collect the updated data from the form
     const options = {
-      name: document.querySelector("#edit-popup #product-name").value,
+      name: document.querySelector("#edit-popup #edit-name").value,
       price: parseFloat(document.querySelector("#edit-popup #edit-price").value),
       quantity: parseInt(document.querySelector("#edit-popup #edit-quantity").value),
       brand: document.querySelector("#edit-popup #edit-brand").value,
@@ -375,15 +375,6 @@ function removeUnauthorizedElements() {
   }
 }
 
-window.onload = async () => {
-  initializeFilters();
-  initializeAddPopup();
-  initializeEditPopup();
-  removeUnauthorizedElements();
-
-  await updateTable();
-};
-
 //download as csv function
 function downloadCSV() {
   const token = localStorage.getItem("sessionToken");
@@ -395,3 +386,13 @@ function downloadCSV() {
   const downloadUrl = `/api/inventory/export?token=${token}`;
   window.location.href = downloadUrl;
 }
+
+
+window.onload = async () => {
+  initializeFilters();
+  initializeAddPopup();
+  initializeEditPopup();
+  removeUnauthorizedElements();
+
+  await updateTable();
+};

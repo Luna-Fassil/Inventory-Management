@@ -335,16 +335,12 @@ class InventoryManager:
         # search filter
         if "search" in filters and filters["search"]:
             filtered_inventory = self.search_item(filters["search"])
-
-        # TODO: Apply filters
-        
-        # Sort by specified column
-        
-    # Apply filters
-        min_price = filters.get("min_price")
-        max_price = filters.get("max_price")
-        min_quantity = filters.get("min_quantity")
-        max_quantity = filters.get("max_quantity")
+                          
+        # Apply filters
+        min_price = filters.get("minPrice")
+        max_price = filters.get("maxPrice")
+        min_quantity = filters.get("minQuantity")
+        max_quantity = filters.get("maxQuantity")
         brand = filters.get("brand")
         season = filters.get("season")
         color = filters.get("color")
@@ -607,3 +603,4 @@ class FlaskApp:
 if __name__ == "__main__":
     flask_app = FlaskApp()
     flask_app.run()
+    
