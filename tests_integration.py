@@ -49,7 +49,8 @@ def test_add_user_updates_users_file(client):
     assert response.status_code == 201
     with open("data/users.json") as f:
         users = json.load(f)["users"]
-        assert any(user["email"] == "test@example.com" for user in users)
+        expected_email = f"{unique_username}@email.com"
+        assert any(user["email"] == expected_email for user in users)
 
 #IT-03: Unauthorized add attempt by employee
 def test_employee_cannot_add_item(client):
