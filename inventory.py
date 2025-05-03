@@ -8,7 +8,6 @@ import io #for download as csv
 import csv #for download as csv
 
 
-
 # Users may be either a guest, employee, manager, or admin
 # Unauthorized: can't access any data
 # guest: can view inventory
