@@ -8,7 +8,7 @@ To run the HyperLink Inventory Management System locally, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/LunaFassil/HyperLink.git
+   git clone https://github.com/Luna-Fassil/Inventory-Management.git
    cd HyperLink
 2. **Install Dependencies**:
    Ensure you have Python and Flask installed. You can install Flask using pip:
@@ -86,7 +86,7 @@ After the build is complete, start the Flask server.
 - **Lack of Undo/History**: No version control system to undo accidental deletions or edits.
 
 ## Repository and Project Board
-- **GitHub Repository**: [HyperLink](https://github.com/LunaFassil/HyperLink)
+- **GitHub Repository**: [HyperLink](https://github.com/Luna-Fassil/Inventory-Management.git)
 - **GitHub Project Board**: [Project Board](https://github.com/users/LunaFassil/projects/2)
 
 ## Challenges and Next Steps
